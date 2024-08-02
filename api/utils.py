@@ -68,7 +68,7 @@ def commit_to_github(repo, files_to_update):
             tree_elements, repo.get_git_tree(last_commit_sha))
 
         new_commit = repo.create_git_commit(
-            message="chore: Update Steam Stats",
+            message="chore: Update Wakatime Leaderboards",
             tree=new_tree,
             parents=[repo.get_git_commit(last_commit_sha)]
         )

@@ -91,8 +91,8 @@ def format_leaderboard_data(leaderboards):
     # Helper function to create table
     def create_table(title, data):
         table = "### " + title + "\n\n"
-        table += "| Ranked | Hours | Daily Avg |\n"
-        table += "| ------ | ----- | --------- |\n"
+        table += "| Ranked | Hours Coded | Daily Avg |\n"
+        table += "| ------ | ----------- | --------- |\n"
         table += "| " + data['rank'] + " | " + \
             data['hours'] + " | " + data['daily_avg'] + " |\n\n"
         return table

@@ -24,21 +24,21 @@
 
 ### Public Leaderboards (Weekly)
 
-| Ranked | Hours | Daily Avg |
-| ------ | ----- | --------- |
-| - | 11 hrs 36 mins | 1 hrs 39 mins |
+| Ranked | Hours          | Daily Avg     |
+| ------ | -------------- | ------------- |
+| -      | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Country Leaderboard (Unknown)
 
-| Ranked | Hours | Daily Avg |
-| ------ | ----- | --------- |
-| - | 11 hrs 36 mins | 1 hrs 39 mins |
+| Ranked | Hours          | Daily Avg     |
+| ------ | -------------- | ------------- |
+| -      | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Top Language (Python)
 
-| Ranked | Hours | Daily Avg |
-| ------ | ----- | --------- |
-| 4173 | 2 hrs 45 mins | 23 mins |
+| Ranked | Hours         | Daily Avg |
+| ------ | ------------- | --------- |
+| 4173   | 2 hrs 45 mins | 23 mins   |
 
 
 <!-- Wakatime-End -->
@@ -51,7 +51,7 @@ Add below comment in your markdown file for Wakatime Leaderboards Stats
 ```
 ***
 ## Setup with Example
-After completing the steps mentioned in the [Prerequisites](#Prerequisites), you have to save all the mentioned keys(except markdown comments) like Steam API Key, Steam-ID, Custom-ID as Secrets in your Github repo's settings.
+After completing the steps mentioned in the [Prerequisites](#Prerequisites), you have to save all the mentioned keys(except markdown comments) like Wakatime API Key as Secrets in your Github repo's settings.
 
 > Repo Settings -> Security -> Secrets and Variables -> Actions -> Add in Repository Secrets
 
