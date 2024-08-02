@@ -1,6 +1,11 @@
 # CHANGELOG
 
-All notable changes to this project will be documented in this file.
+## v0.0.0 (2024-08-02)
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) and [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+### Chore
+
+* chore: Wakatime Leaderboards ([`ebdba18`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/ebdba18c313bdd4a2cbca294ce908c1a8b2e27fb))
+
+### Unknown
+
+* Initial commit ([`fd82eda`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/fd82eda4bcb9e8338514faa61d859df2b498c3c7))
