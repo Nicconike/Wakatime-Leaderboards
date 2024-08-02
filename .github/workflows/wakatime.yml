@@ -1,0 +1,36 @@
+name: Wakatime Leaderboards
+
+on:
+    schedule:
+        # Runs every Monday at 12AM IST (UTC+5:30)
+        - cron: "30 18 * * 0"
+    workflow_dispatch:
+    push:
+        branches: master
+        paths:
+            - '.github/workflows/wakatime.yml'
+            - 'api/*.py'
+
+jobs:
+    update-readme:
+        if: >
+            github.event_name != 'pull_request' &&
+            github.actor != 'dependabot[bot]' &&
+            github.actor != 'github-actions[bot]' &&
+            github.actor != 'protected-auto-commits[bot]'
+        name: Wakatime Leaderboards
+        runs-on: ubuntu-latest
+        steps:
+          - name: GitHub App Token
+            uses: actions/create-github-app-token@v1
+            id: app-token
+            with:
+                app-id: ${{ secrets.GH_APP_ID }}
+                private-key: ${{ secrets.GH_PRIVATE_KEY }}
+
+          - name: Run Wakatime Leaderboards
+            uses: docker://nicconike/wakatime-leaderboards:latest
+            env:
+                GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+                GITHUB_REPOSITORY: ${{ github.repository }}
+                INPUT_WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}

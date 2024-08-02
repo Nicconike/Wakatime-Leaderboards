@@ -1,0 +1,22 @@
+# .dockerignore
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.bak
+*.swp
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+build/
+dist/
+.git
+.gitignore
+.vscode
+.env
+venv/
+env/

@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wakatime-leaderboards"
+dynamic = ["version"]
+description = "Automated WakaTime leaderboards for GitHub profiles"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Nicco", email = "38905025+Nicconike@users.noreply.github.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "requests",
+    "PyGithub",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pylint",
+]
+
+[project.urls]
+Homepage = "https://github.com/nicconike/wakatime-leaderboards"
+"Bug Tracker" = "https://github.com/nicconike/wakatime-leaderboards/issues"
+
+[tool.semantic_release]
+version_variable = ["api/main.py:__version__"]
+version_source = "commit"
+commit_version_number = true
+commit_subject = "chore(release): bump version to {version}"
+commit_message = "chore(release): Version Release {version}"
+upload_to_pypi = false
+branch = "master"
+build_command = "pip install build && python -m build"
+
+[tool.semantic_release.changelog]
+changelog_file = "CHANGELOG.md"
+exclude_commit_patterns = [
+    "chore\\(release\\):.*",
+]
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = [
+    "feat",
+    "fix",
+    "docs",
+    "style",
+    "refactor",
+    "perf",
+    "test",
+    "build",
+    "ci",
+    "chore",
+    "revert"
+]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
