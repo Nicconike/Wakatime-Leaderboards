@@ -31,6 +31,7 @@ jobs:
             uses: actions/checkout@v4
             with:
                 fetch-depth: 0
+                fetch-tags: true
                 token: ${{ steps.app-token.outputs.token }}
 
           - name: Set up Python
@@ -51,6 +52,11 @@ jobs:
             run: |
                 python -m pip install --upgrade pip
                 pip install python-semantic-release
+
+          - name: Fetch and update
+            run: |
+                git fetch origin
+                git reset --hard origin/${{ github.ref_name }}
 
           - name: Semantic Release
             id: github-release
