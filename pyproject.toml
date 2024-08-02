@@ -39,20 +39,16 @@ Homepage = "https://github.com/nicconike/wakatime-leaderboards"
 "Bug Tracker" = "https://github.com/nicconike/wakatime-leaderboards/issues"
 
 [tool.semantic_release]
-version_variable = ["api/main.py:__version__"]
+version_variables = ["api/main.py:__version__"]
 version_source = "commit"
 commit_version_number = true
-commit_subject = "chore(release): bump version to {version}"
 commit_message = "chore(release): Version Release {version}"
 upload_to_pypi = false
 branch = "master"
-build_command = "pip install build && python -m build"
 
 [tool.semantic_release.changelog]
+template_dir = "templates"
 changelog_file = "CHANGELOG.md"
-exclude_commit_patterns = [
-    "chore\\(release\\):.*",
-]
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = [

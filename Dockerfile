@@ -10,13 +10,13 @@ ENV PYTHONPATH=/wakatime-leaderboards
 WORKDIR /wakatime-leaderboards
 
 # Copy the requirements file into the container
-COPY requirements.txt /wakatime-leaderboards/requirements.txt
+COPY requirements.txt .
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code and other necessary files into the container
-COPY api/ /wakatime-leaderboards/api/
+COPY api/ ./api/
 
 # Set the entrypoint to run the Python script
 ENTRYPOINT ["python", "api/main.py"]
