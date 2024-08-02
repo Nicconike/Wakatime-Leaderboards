@@ -10,7 +10,7 @@
 ![GitHub License](https://img.shields.io/github/license/nicconike/Wakatime-Leaderboards)
 [![Visitor Badge](https://badges.pufler.dev/visits/nicconike/Wakatime-Leaderboards)](https://badges.pufler.dev)
 
-> ### Display your Coding Activity data or Leaderboards data in your GitHub profile
+> ### Automated WakaTime leaderboards for your GitHub profile
 
 ***
 ## Prerequisites
@@ -19,14 +19,14 @@
 ***
 
 ## Example
-<!-- Leaderboards start -->
-<!-- Leaderboards end -->
+<!-- Wakatime-Start -->
+<!-- Wakatime-End -->
 ***
 ## Update README
 Add below comment in your markdown file for Wakatime Leaderboards Stats
 ```md
-<!-- Leaderboards start -->
-<!-- Leaderboards end -->
+<!-- Wakatime-Start -->
+<!-- Wakatime-End -->
 ```
 ***
 ## Setup with Example
@@ -37,6 +37,7 @@ After completing the steps mentioned in the [Prerequisites](#Prerequisites), you
 If you are new to **Github Secrets** then you can checkout this official doc [here](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions).
 
 **Sample Workflow File**
+
 `wakatime.yml`
 
 ```yaml

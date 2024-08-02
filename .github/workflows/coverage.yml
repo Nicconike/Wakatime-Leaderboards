@@ -1,0 +1,44 @@
+name: "Code Coverage"
+
+on:
+    push:
+        branches: master
+        paths:
+            - ".github/workflows/coverage.yml"
+            - "tests/*.py"
+    pull_request:
+        branches: master
+
+jobs:
+    code-coverage:
+        if: github.actor != 'dependabot[bot]' || github.actor != 'github-actions[bot]' || github.actor != 'protected-auto-commits[bot]'
+        name: Codecov
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Set up Python
+            uses: actions/setup-python@v5
+            with:
+                python-version: "3.x"
+                cache: "pip"
+
+          - name: Install Dependencies
+            run: |
+                pip install -r requirements.txt
+
+          - name: Run tests with coverage
+            run: pytest --cov=api.utils --cov-report=xml --cov-report=term-missing
+            env:
+                INPUT_WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+                GITHUB_REPOSITORY: ${{ github.repository }}
+
+          - name: Upload coverage to Codecov
+            uses: codecov/codecov-action@v4
+            with:
+                token: ${{ secrets.CODECOV_TOKEN }}
+                files: ./coverage.xml
+                flags: unittests
+                name: codecov-umbrella
+                fail_ci_if_error: true

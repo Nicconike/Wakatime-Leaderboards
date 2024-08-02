@@ -5,6 +5,7 @@ FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH=/wakatime-leaderboards
+ENV HOME=/wakatime-leaderboards
 
 # Set the working directory in the container
 WORKDIR /wakatime-leaderboards
@@ -19,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY api/ ./api/
 
 # Set the entrypoint to run the Python script
-ENTRYPOINT ["python", "api/main.py"]
+ENTRYPOINT ["sh", "-c", "cd /wakatime-leaderboards && python api/main.py"]

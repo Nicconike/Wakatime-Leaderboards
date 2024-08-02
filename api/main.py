@@ -1,12 +1,11 @@
 """Test the Wakatime API and save the fetched data to a file"""
 import base64
-import json
 import os
 import logging
 import time
 import requests
 from github import GithubException
-from utils import initialize_github, commit_to_github
+from api.utils import initialize_github, commit_to_github
 
 # Configure logging
 logging.basicConfig(level=logging.INFO,
@@ -19,7 +18,7 @@ WAKATIME_API_KEY = os.environ["INPUT_WAKATIME_API_KEY"]
 REQUEST_TIMEOUT = (25, 30)
 
 # Version Identifier for Changelog
-__version__ = "0.0.0"
+__version__ = "0.1.0"
 
 
 def format_time(seconds):
@@ -28,8 +27,7 @@ def format_time(seconds):
     minutes, _ = divmod(remainder, 60)
     if hours > 0 or minutes >= 60:
         return str(int(hours)) + " hrs " + str(int(minutes)) + " mins"
-    else:
-        return str(int(minutes)) + " mins"
+    return str(int(minutes)) + " mins"
 
 
 def get_wakatime_stats(api_key):
@@ -172,7 +170,7 @@ def get_readme_content(repo):
 def update_wakatime_stats():
     """Function to update Wakatime stats in README"""
     repo = initialize_github()
-    wakatime_api_key = os.environ.get("INPUT_WAKATIME_API_KEY")
+    wakatime_api_key = os.environ["INPUT_WAKATIME_API_KEY"]
     if not wakatime_api_key:
         raise ValueError("WAKATIME_API_KEY environment variable not set")
 
@@ -183,8 +181,8 @@ def update_wakatime_stats():
     formatted_data = format_leaderboard_data(leaderboards)
 
     # Define markers
-    start_marker = "<!-- WAKATIME-START -->"
-    end_marker = "<!-- WAKATIME-END -->"
+    start_marker = "<!-- Wakatime-Start -->"
+    end_marker = "<!-- Wakatime-End -->"
 
     # Update README content
     new_section_content = update_readme(
@@ -214,16 +212,6 @@ def update_wakatime_stats():
             logger.error("Failed to commit changes to GitHub")
     else:
         logger.info("No changes needed in README")
-
-
-def save_to_file(data, filename):
-    """Save fetched data to a file in JSON format"""
-    if data is not None:
-        with open(filename, "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=4)
-        print(f"Data saved to {filename}")
-    else:
-        print("No data to save")
 
 
 def log_execution_time(start_time):
