@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=70"]
+requires = ["setuptools ~= 70"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -12,15 +12,7 @@ license = {file = "LICENSE"}
 authors = [
     {name = "Nicco", email = "38905025+Nicconike@users.noreply.github.com"},
 ]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-]
+dynamic = "version_variables"
 dependencies = [
     "requests",
     "PyGithub",
@@ -50,18 +42,50 @@ commit_parser = "angular"
 major_on_zero = false
 
 [tool.semantic_release.commit_parser_options]
-allowed_tags = [
-    "feat",
-    "fix",
-    "docs",
-    "style",
-    "refactor",
-    "perf",
-    "test",
-    "build",
-    "ci",
-    "chore",
-    "revert"
-]
+allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test", "revert"]
 minor_tags = ["feat"]
 patch_tags = ["fix", "perf"]
+default_bump_level = 0
+
+[tool.semantic_release.remote]
+type = "github"
+token = { env = "GH_TOKEN" }
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
+dist_glob_patterns = [
+    "dist/*"
+]
+
+[tool.semantic_release.changelog]
+template_dir = "templates"
+changelog_file = "CHANGELOG.md"
+exclude_commit_patterns = []
+
+[tool.semantic_release.changelog.environment]
+trim_blocks = true
+
+[tool.semantic_release.plugins]
+verify_conditions = [
+    "@semantic-release/git",
+    "@semantic-release/github"
+]
+analyze_commits = [
+    "@semantic-release/commit-analyzer"
+]
+generate_notes = [
+    "@semantic-release/release-notes-generator"
+]
+prepare = [
+    "@semantic-release/changelog",
+    "@semantic-release/git"
+]
+publish = [
+    "@semantic-release/github"
+]
+success = [
+    "@semantic-release/github"
+]
+fail = [
+    "@semantic-release/github"
+]

@@ -1,4 +1,4 @@
-"""Test the Wakatime API and save the fetched data to a file"""
+"""Main Runner Script to fetch the Wakatime Stats & Generate Wakatime Leaderboards Stats"""
 import base64
 import os
 import logging
@@ -49,7 +49,6 @@ def get_leaderboards(api_key):
     headers = {"Authorization": auth_string}
 
     stats = get_wakatime_stats(api_key)
-    country_code = stats.get("country_code")
     languages = stats.get("languages", [])
     top_language = languages[0]["name"] if languages else None
     total_coding_time = stats.get("total_seconds", 0)
@@ -63,15 +62,18 @@ def get_leaderboards(api_key):
     # Global leaderboard
     response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
     if response.status_code == 200:
-        leaderboards["global"] = response.json().get("current_user")
+        global_data = response.json().get("current_user", {})
+        leaderboards["global"] = global_data
+        # Extract country from global data
+        leaderboards["country_name"] = global_data.get(
+            "user", {}).get("city", {}).get("country", "Unknown")
 
     # Country leaderboard
-    if country_code:
-        country_url = url + "?country_code=" + country_code
-        response = requests.get(
-            country_url, headers=headers, timeout=REQUEST_TIMEOUT)
-        if response.status_code == 200:
-            leaderboards["country"] = response.json().get("current_user")
+    country_url = url + "?country=" + leaderboards["country_name"]
+    response = requests.get(country_url, headers=headers,
+                            timeout=REQUEST_TIMEOUT)
+    if response.status_code == 200:
+        leaderboards["country"] = response.json().get("current_user")
 
     # Language leaderboard
     if top_language:
@@ -88,48 +90,35 @@ def format_leaderboard_data(leaderboards):
     """Format Leaderboard Stats Data"""
     markdown = "### Wakatime Leaderboards (Worldwide)\n\n"
 
-    # Helper function to create table
-    def create_table(title, data):
+    def create_table(title, data, total_seconds):
         table = "#### " + title + "\n\n"
         table += "| Ranked | Hours Coded | Daily Avg |\n"
         table += "| ------ | ----------- | --------- |\n"
-        table += "| " + data["rank"] + " | " + \
-            data["hours"] + " | " + data["daily_avg"] + " |\n\n"
+        rank = str(data.get("rank", "-"))
+        hours = format_time(total_seconds)
+        daily_avg = format_time(total_seconds / 7)  # Assuming 7 days
+        table += "| " + rank + " | " + hours + " | " + daily_avg + " |\n\n"
         return table
 
-    total_seconds = leaderboards["total_coding_time"]
+    total_coding_time = leaderboards["total_coding_time"]
 
     # Public Leaderboards (Weekly)
     global_data = leaderboards.get("global", {})
-    public_data = {
-        "rank": str(global_data.get("rank")) if global_data.get("rank") is not None else "-",
-        "hours": format_time(total_seconds),
-        "daily_avg": format_time(total_seconds / 7)
-    }
-    markdown += create_table("Public Leaderboards (Weekly)", public_data)
+    markdown += create_table("Public Leaderboards (Weekly)",
+                             global_data, total_coding_time)
 
     # Country Leaderboard
+    country_name = leaderboards.get("country_name", "Unknown")
     country_data = leaderboards.get("country", {})
-    country_name = country_data.get("country", "Unknown")
-    country_leaderboard_data = {
-        "rank": str(country_data.get("rank")) if country_data.get("rank") is not None else "-",
-        "hours": format_time(total_seconds),
-        "daily_avg": format_time(total_seconds / 7)
-    }
     markdown += create_table("Country Leaderboard (" +
-                             country_name + ")", country_leaderboard_data)
+                             country_name + ")", country_data, total_coding_time)
 
     # Top Language
     language_data = leaderboards.get("language", {})
     top_language = leaderboards.get("top_language", "Unknown")
-    language_seconds = leaderboards["language_times"].get(top_language, 0)
-    language_leaderboard_data = {
-        "rank": str(language_data.get("rank")) if language_data.get("rank") is not None else "-",
-        "hours": format_time(language_seconds),
-        "daily_avg": format_time(language_seconds / 7)
-    }
+    language_time = leaderboards["language_times"].get(top_language, 0)
     markdown += create_table("Top Language (" +
-                             top_language + ")", language_leaderboard_data)
+                             top_language + ")", language_data, language_time)
 
     return markdown
 
@@ -170,12 +159,11 @@ def get_readme_content(repo):
 def update_wakatime_stats():
     """Function to update Wakatime stats in README"""
     repo = initialize_github()
-    wakatime_api_key = os.environ["INPUT_WAKATIME_API_KEY"]
-    if not wakatime_api_key:
+    if not WAKATIME_API_KEY:
         raise ValueError("WAKATIME_API_KEY environment variable not set")
 
     # Fetch Wakatime leaderboard data
-    leaderboards = get_leaderboards(wakatime_api_key)
+    leaderboards = get_leaderboards(WAKATIME_API_KEY)
 
     # Format leaderboard data
     formatted_data = format_leaderboard_data(leaderboards)
@@ -207,7 +195,7 @@ def update_wakatime_stats():
         success = commit_to_github(repo, files_to_update)
 
         if success:
-            logger.info("Successfully updated README with Wakatime stats")
+            logger.info("Updated README with Wakatime Leaderboards")
         else:
             logger.error("Failed to commit changes to GitHub")
     else:

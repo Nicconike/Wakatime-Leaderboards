@@ -17,29 +17,34 @@
 ## Prerequisites
 1. **Wakatime API Key:** API key is required to fetch your account details. Get your API key from [here](https://wakatime.com/api-key).
 2. **Markdown Comments:** Update the markdown file by adding the comments where your Wakatime Leaderboard Stats will be embedded to. Refer [here](#Update-Readme) to learn more.
-***
 
+> [!NOTE]
+> **Coding Activity:** Total hours coded over the last 7 days from Yesterday, using default 15 minute timeout, only shows coding activity from known languages.
+>
+> **Public Leaderboards:** You will appear in the public leaderboards only if your weekly coded hours is around 10 hrs(Changes from time to time).
+
+***
 ## Example
 <!-- Wakatime-Start -->
 ## Wakatime Leaderboards (Worldwide)
 
 ### Public Leaderboards (Weekly)
 
-| Ranked | Hours Coded | Daily Avg |
-| ------ | ----------- | --------- |
-| 9650 | 11 hrs 36 mins | 1 hrs 39 mins |
+| Ranked | Hours Coded    | Daily Avg     |
+| ------ | -------------- | ------------- |
+| 9650   | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Country Leaderboard (Unknown)
 
-| Ranked | Hours Coded | Daily Avg |
-| ------ | ----------- | --------- |
-| - | 11 hrs 36 mins | 1 hrs 39 mins |
+| Ranked | Hours Coded    | Daily Avg     |
+| ------ | -------------- | ------------- |
+| -      | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Top Language (Python)
 
-| Ranked | Hours Coded | Daily Avg |
-| ------ | ----------- | --------- |
-| 1981 | 2 hrs 45 mins | 23 mins |
+| Ranked | Hours Coded   | Daily Avg |
+| ------ | ------------- | --------- |
+| 1981   | 2 hrs 45 mins | 23 mins   |
 
 
 <!-- Wakatime-End -->
