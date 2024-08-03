@@ -26,21 +26,21 @@
 ***
 ## Example
 <!-- Wakatime-Start -->
-## Wakatime Leaderboards (Worldwide)
+### Wakatime Leaderboards (Worldwide)
 
-### Public Leaderboards (Weekly)
+#### Public Leaderboards (Weekly)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
 | 9650 | 11 hrs 36 mins | 1 hrs 39 mins |
 
-### Country Leaderboard (Unknown)
+#### Country Leaderboard (India)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| - | 11 hrs 36 mins | 1 hrs 39 mins |
+| 9650 | 11 hrs 36 mins | 1 hrs 39 mins |
 
-### Top Language (Python)
+#### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
