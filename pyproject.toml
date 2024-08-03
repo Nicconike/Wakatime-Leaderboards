@@ -4,7 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Wakatime-Leaderboards"
-dynamic = ["version"]
 description = "Automated WakaTime leaderboards for your GitHub profile"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -14,32 +13,33 @@ authors = [
 ]
 dynamic = "version_variables"
 dependencies = [
-    "requests",
-    "PyGithub",
+    "requests==2.32.3",
+    "PyGithub==2.3.0",
+    "python-semantic-release==9.8.6"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest",
-    "pytest-cov",
-    "pylint",
+    "pylint==3.2.6",
+]
+test = [
+    "pytest-asyncio==0.23.8",
+    "pytest-cov==5.0.0",
+    "pytest-mock==3.14.0",
+    "requests-mock==1.12.1"
 ]
 
 [project.urls]
 Homepage = "https://github.com/nicconike/wakatime-leaderboards"
+documentation = "https://github.com/Nicconike/Wakatime-Leaderboards/blob/master/README.md"
 "Bug Tracker" = "https://github.com/nicconike/wakatime-leaderboards/issues"
 
 [tool.semantic_release]
 version_variables = ["api/main.py:__version__"]
 tag_format = "v{version}"
-commit_version_number = true
 commit_message = "chore: Version Release {version}"
-upload_to_pypi = false
 branch = "master"
-upload_to_release = true
 changelog_file = "CHANGELOG.md"
-commit_parser = "angular"
-major_on_zero = false
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test", "revert"]
@@ -58,9 +58,7 @@ dist_glob_patterns = [
 ]
 
 [tool.semantic_release.changelog]
-template_dir = "templates"
 changelog_file = "CHANGELOG.md"
-exclude_commit_patterns = []
 
 [tool.semantic_release.changelog.environment]
 trim_blocks = true
