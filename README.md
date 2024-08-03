@@ -3,6 +3,7 @@
 [![Release](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/release.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/release.yml)
 [![Bandit](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/bandit.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/bandit.yml)
 [![CodeQL & Pylint](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/codeql.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/codeql.yml)
+[![codecov](https://codecov.io/gh/Nicconike/Wakatime-Leaderboards/graph/badge.svg?token=CX701AOW5Y)](https://codecov.io/gh/Nicconike/Wakatime-Leaderboards)
 ![Docker Image Size](https://img.shields.io/docker/image-size/nicconike/wakatime-leaderboards?logo=docker&label=Docker%20Image)
 ![Docker Pulls](https://img.shields.io/docker/pulls/nicconike/wakatime-leaderboards?logo=docker&label=Docker%20Pulls)
 ![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fgithub.com%2FNicconike%2FWakatime-Leaderboards%2Fblob%2Fmaster%2Fpyproject.toml%3Fraw%3Dtrue)
@@ -24,21 +25,21 @@
 
 ### Public Leaderboards (Weekly)
 
-| Ranked | Hours Coded | Daily Avg |
-| ------ | ----------- | --------- |
-| - | 11 hrs 36 mins | 1 hrs 39 mins |
+| Ranked | Hours Coded    | Daily Avg     |
+| ------ | -------------- | ------------- |
+| -      | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Country Leaderboard (Unknown)
 
-| Ranked | Hours Coded | Daily Avg |
-| ------ | ----------- | --------- |
-| - | 11 hrs 36 mins | 1 hrs 39 mins |
+| Ranked | Hours Coded    | Daily Avg     |
+| ------ | -------------- | ------------- |
+| -      | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Top Language (Python)
 
-| Ranked | Hours Coded | Daily Avg |
-| ------ | ----------- | --------- |
-| 4173 | 2 hrs 45 mins | 23 mins |
+| Ranked | Hours Coded   | Daily Avg |
+| ------ | ------------- | --------- |
+| 4173   | 2 hrs 45 mins | 23 mins   |
 
 
 <!-- Wakatime-End -->

@@ -37,7 +37,7 @@ def get_wakatime_stats(api_key):
     headers = {"Authorization": auth_string}
     response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
     if response.status_code == 200:
-        return response.json().get('data', {})
+        return response.json().get("data", {})
     raise ValueError("Failed to fetch user stats: " +
                      str(response.status_code))
 
@@ -49,21 +49,21 @@ def get_leaderboards(api_key):
     headers = {"Authorization": auth_string}
 
     stats = get_wakatime_stats(api_key)
-    country_code = stats.get('country_code')
-    languages = stats.get('languages', [])
-    top_language = languages[0]['name'] if languages else None
-    total_coding_time = stats.get('total_seconds', 0)
+    country_code = stats.get("country_code")
+    languages = stats.get("languages", [])
+    top_language = languages[0]["name"] if languages else None
+    total_coding_time = stats.get("total_seconds", 0)
 
     leaderboards = {
-        'total_coding_time': total_coding_time,
-        'top_language': top_language,
-        'language_times': {lang['name']: lang['total_seconds'] for lang in languages}
+        "total_coding_time": total_coding_time,
+        "top_language": top_language,
+        "language_times": {lang["name"]: lang["total_seconds"] for lang in languages}
     }
 
     # Global leaderboard
     response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
     if response.status_code == 200:
-        leaderboards['global'] = response.json().get('current_user')
+        leaderboards["global"] = response.json().get("current_user")
 
     # Country leaderboard
     if country_code:
@@ -71,7 +71,7 @@ def get_leaderboards(api_key):
         response = requests.get(
             country_url, headers=headers, timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
-            leaderboards['country'] = response.json().get('current_user')
+            leaderboards["country"] = response.json().get("current_user")
 
     # Language leaderboard
     if top_language:
@@ -79,54 +79,54 @@ def get_leaderboards(api_key):
         response = requests.get(
             language_url, headers=headers, timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
-            leaderboards['language'] = response.json().get('current_user')
+            leaderboards["language"] = response.json().get("current_user")
 
     return leaderboards
 
 
 def format_leaderboard_data(leaderboards):
     """Format Leaderboard Stats Data"""
-    markdown = "## Wakatime Leaderboards (Worldwide)\n\n"
+    markdown = "### Wakatime Leaderboards (Worldwide)\n\n"
 
     # Helper function to create table
     def create_table(title, data):
-        table = "### " + title + "\n\n"
+        table = "#### " + title + "\n\n"
         table += "| Ranked | Hours Coded | Daily Avg |\n"
         table += "| ------ | ----------- | --------- |\n"
-        table += "| " + data['rank'] + " | " + \
-            data['hours'] + " | " + data['daily_avg'] + " |\n\n"
+        table += "| " + data["rank"] + " | " + \
+            data["hours"] + " | " + data["daily_avg"] + " |\n\n"
         return table
 
-    total_seconds = leaderboards['total_coding_time']
+    total_seconds = leaderboards["total_coding_time"]
 
     # Public Leaderboards (Weekly)
-    global_data = leaderboards.get('global', {})
+    global_data = leaderboards.get("global", {})
     public_data = {
-        'rank': str(global_data.get('rank')) if global_data.get('rank') is not None else '-',
-        'hours': format_time(total_seconds),
-        'daily_avg': format_time(total_seconds / 7)
+        "rank": str(global_data.get("rank")) if global_data.get("rank") is not None else "-",
+        "hours": format_time(total_seconds),
+        "daily_avg": format_time(total_seconds / 7)
     }
     markdown += create_table("Public Leaderboards (Weekly)", public_data)
 
     # Country Leaderboard
-    country_data = leaderboards.get('country', {})
-    country_name = country_data.get('country', 'Unknown')
+    country_data = leaderboards.get("country", {})
+    country_name = country_data.get("country", "Unknown")
     country_leaderboard_data = {
-        'rank': str(country_data.get('rank')) if country_data.get('rank') is not None else '-',
-        'hours': format_time(total_seconds),
-        'daily_avg': format_time(total_seconds / 7)
+        "rank": str(country_data.get("rank")) if country_data.get("rank") is not None else "-",
+        "hours": format_time(total_seconds),
+        "daily_avg": format_time(total_seconds / 7)
     }
     markdown += create_table("Country Leaderboard (" +
                              country_name + ")", country_leaderboard_data)
 
     # Top Language
-    language_data = leaderboards.get('language', {})
-    top_language = leaderboards.get('top_language', 'Unknown')
-    language_seconds = leaderboards['language_times'].get(top_language, 0)
+    language_data = leaderboards.get("language", {})
+    top_language = leaderboards.get("top_language", "Unknown")
+    language_seconds = leaderboards["language_times"].get(top_language, 0)
     language_leaderboard_data = {
-        'rank': str(language_data.get('rank')) if language_data.get('rank') is not None else '-',
-        'hours': format_time(language_seconds),
-        'daily_avg': format_time(language_seconds / 7)
+        "rank": str(language_data.get("rank")) if language_data.get("rank") is not None else "-",
+        "hours": format_time(language_seconds),
+        "daily_avg": format_time(language_seconds / 7)
     }
     markdown += create_table("Top Language (" +
                              top_language + ")", language_leaderboard_data)
