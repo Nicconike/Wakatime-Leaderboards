@@ -24,20 +24,20 @@
 
 ### Public Leaderboards (Weekly)
 
-| Ranked | Hours | Daily Avg |
-| ------ | ----- | --------- |
+| Ranked | Hours Coded | Daily Avg |
+| ------ | ----------- | --------- |
 | - | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Country Leaderboard (Unknown)
 
-| Ranked | Hours | Daily Avg |
-| ------ | ----- | --------- |
+| Ranked | Hours Coded | Daily Avg |
+| ------ | ----------- | --------- |
 | - | 11 hrs 36 mins | 1 hrs 39 mins |
 
 ### Top Language (Python)
 
-| Ranked | Hours | Daily Avg |
-| ------ | ----- | --------- |
+| Ranked | Hours Coded | Daily Avg |
+| ------ | ----------- | --------- |
 | 4173 | 2 hrs 45 mins | 23 mins |
 
 
