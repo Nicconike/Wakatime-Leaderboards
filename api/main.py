@@ -65,23 +65,22 @@ def get_leaderboards(api_key):
         global_data = response.json().get("current_user", {})
         leaderboards["global"] = global_data
         # Extract country from global data
-        leaderboards["country_name"] = global_data.get(
-            "user", {}).get("city", {}).get("country", "Unknown")
+        leaderboards["country_name"] = global_data.get("user", {}).get("city", {}).get("country", "Unknown")
 
     # Country leaderboard
     country_url = url + "?country=" + leaderboards["country_name"]
-    response = requests.get(country_url, headers=headers,
-                            timeout=REQUEST_TIMEOUT)
+    response = requests.get(country_url, headers=headers, timeout=REQUEST_TIMEOUT)
     if response.status_code == 200:
-        leaderboards["country"] = response.json().get("current_user")
+        country_data = response.json().get("current_user", {})
+        leaderboards["country"] = country_data
 
     # Language leaderboard
     if top_language:
         language_url = url + "?language=" + top_language
-        response = requests.get(
-            language_url, headers=headers, timeout=REQUEST_TIMEOUT)
+        response = requests.get(language_url, headers=headers, timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
-            leaderboards["language"] = response.json().get("current_user")
+            language_data = response.json().get("current_user", {})
+            leaderboards["language"] = language_data
 
     return leaderboards
 
@@ -104,21 +103,18 @@ def format_leaderboard_data(leaderboards):
 
     # Public Leaderboards (Weekly)
     global_data = leaderboards.get("global", {})
-    markdown += create_table("Public Leaderboards (Weekly)",
-                             global_data, total_coding_time)
+    markdown += create_table("Public Leaderboards (Weekly)", global_data, total_coding_time)
 
     # Country Leaderboard
     country_name = leaderboards.get("country_name", "Unknown")
     country_data = leaderboards.get("country", {})
-    markdown += create_table("Country Leaderboard (" +
-                             country_name + ")", country_data, total_coding_time)
+    markdown += create_table("Country Leaderboard (" + country_name + ")", country_data, total_coding_time)
 
     # Top Language
     language_data = leaderboards.get("language", {})
     top_language = leaderboards.get("top_language", "Unknown")
     language_time = leaderboards["language_times"].get(top_language, 0)
-    markdown += create_table("Top Language (" +
-                             top_language + ")", language_data, language_time)
+    markdown += create_table("Top Language (" + top_language + ")", language_data, language_time)
 
     return markdown
 
