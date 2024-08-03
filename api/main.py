@@ -96,7 +96,7 @@ def format_leaderboard_data(leaderboards):
         table += "| ------ | ----------- | --------- |\n"
         rank = str(data.get("rank", "-"))
         hours = format_time(total_seconds)
-        daily_avg = format_time(total_seconds / 7)  # Assuming 7 days
+        daily_avg = format_time(total_seconds / 7)
         table += "| " + rank + " | " + hours + " | " + daily_avg + " |\n\n"
         return table
 
