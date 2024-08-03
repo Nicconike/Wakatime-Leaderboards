@@ -51,15 +51,9 @@ jobs:
           - name: Install Dependencies
             run: |
                 python -m pip install --upgrade pip
-                pip install python-semantic-release
-
-          - name: Fetch and update
-            run: |
-                git fetch origin
-                git reset --hard origin/${{ github.ref_name }}
+                pip install python-semantic-release build
 
           - name: Semantic Release
-            id: github-release
             uses: python-semantic-release/python-semantic-release@v9.8.6
             with:
                 github_token: ${{ steps.app-token.outputs.token }}
