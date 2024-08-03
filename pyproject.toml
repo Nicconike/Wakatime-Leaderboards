@@ -3,11 +3,11 @@ requires = ["setuptools>=70"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "wakatime-leaderboards"
+name = "Wakatime-Leaderboards"
 dynamic = ["version"]
 description = "Automated WakaTime leaderboards for your GitHub profile"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = {file = "LICENSE"}
 authors = [
     {name = "Nicco", email = "38905025+Nicconike@users.noreply.github.com"},
@@ -17,7 +17,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -40,18 +39,15 @@ Homepage = "https://github.com/nicconike/wakatime-leaderboards"
 
 [tool.semantic_release]
 version_variables = ["api/main.py:__version__"]
-version_source = "commit"
 commit_version_number = true
-commit_message = "chore(release): Version Release {version}"
+commit_message = "chore: Version Release {version}"
 upload_to_pypi = false
 branch = "master"
 upload_to_release = true
+changelog_file = "CHANGELOG.md"
+build_command = "python -m build"
 commit_parser = "angular"
 major_on_zero = false
-
-[tool.semantic_release.changelog]
-changelog_file = "CHANGELOG.md"
-changelog_template = "changelog_template.md"
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = [
