@@ -32,19 +32,19 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 9650 | 21 hrs 53 mins | 3 hrs 7 mins |
+| 4701 | 24 hrs 1 mins | 3 hrs 25 mins |
 
 #### Country Leaderboard (India)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 9650 | 21 hrs 53 mins | 3 hrs 7 mins |
+| 4701 | 24 hrs 1 mins | 3 hrs 25 mins |
 
 #### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 1981 | 7 hrs 39 mins | 1 hrs 5 mins |
+| 1030 | 8 hrs 36 mins | 1 hrs 13 mins |
 
 
 <!-- Wakatime-End -->
