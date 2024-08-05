@@ -7,7 +7,7 @@
 ![Docker Image Size](https://img.shields.io/docker/image-size/nicconike/wakatime-leaderboards?logo=docker&label=Docker%20Image)
 ![Docker Pulls](https://img.shields.io/docker/pulls/nicconike/wakatime-leaderboards?logo=docker&label=Docker%20Pulls)
 ![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fgithub.com%2FNicconike%2FWakatime-Leaderboards%2Fblob%2Fmaster%2Fpyproject.toml%3Fraw%3Dtrue)
-![Pylint](https://img.shields.io/badge/Pylint-9.08-darkgreen?logo=python)
+![Pylint](https://img.shields.io/badge/Pylint-10.00-brightgreen?logo=python)
 ![GitHub License](https://img.shields.io/github/license/nicconike/Wakatime-Leaderboards)
 [![Visitor Badge](https://badges.pufler.dev/visits/nicconike/Wakatime-Leaderboards)](https://badges.pufler.dev)
 
