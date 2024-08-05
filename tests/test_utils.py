@@ -1,12 +1,19 @@
 """Test utils Runner Script"""
+
 # Disable pylint warnings for false positives
 # pylint: disable=redefined-outer-name, unused-argument
 import os
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 import pytest
-from api.utils import (get_github_token, get_repo,
-                       initialize_github, create_tree_elements, commit_to_github, logger)
+from api.utils import (
+    get_github_token,
+    get_repo,
+    initialize_github,
+    create_tree_elements,
+    commit_to_github,
+    logger,
+)
 
 
 @pytest.fixture
@@ -34,12 +41,13 @@ def mock_env_vars(monkeypatch):
 def mock_dependencies(mocker):
     """Fixtures for mocking dependencies"""
     fixtures = {}
-    fixtures['initialize_github'] = mocker.patch('api.utils.initialize_github')
-    fixtures['collect_files_to_update'] = mocker.patch(
-        'api.utils.collect_files_to_update')
-    fixtures['commit_to_github'] = mocker.patch('api.utils.commit_to_github')
-    fixtures['logger_info'] = mocker.patch.object(logger, 'info')
-    fixtures['logger_error'] = mocker.patch.object(logger, 'error')
+    fixtures["initialize_github"] = mocker.patch("api.utils.initialize_github")
+    fixtures["collect_files_to_update"] = mocker.patch(
+        "api.utils.collect_files_to_update"
+    )
+    fixtures["commit_to_github"] = mocker.patch("api.utils.commit_to_github")
+    fixtures["logger_info"] = mocker.patch.object(logger, "info")
+    fixtures["logger_error"] = mocker.patch.object(logger, "error")
     return fixtures
 
 
@@ -63,7 +71,9 @@ def test_get_repo(mock_github):
         TestCase().assertEqual(repo, mock_repo)
 
     with patch.dict(os.environ, {}, clear=True):
-        with pytest.raises(ValueError, match="GITHUB_REPOSITORY environment variable not set"):
+        with pytest.raises(
+            ValueError, match="GITHUB_REPOSITORY environment variable not set"
+        ):
             get_repo(mock_github.return_value)
 
 
@@ -79,14 +89,13 @@ def test_initialize_github(mock_github, mock_env_vars):
 @patch("api.utils.InputGitTreeElement")
 def test_create_tree_elements(mock_input_git_tree_element, mock_repo):
     """Test Create Tree elements"""
-    files_to_update = {
-        "README.md": "New Content",
-        "image.png": b"binary content"
-    }
+    files_to_update = {"README.md": "New Content", "image.png": b"binary content"}
     mock_repo.create_git_blob.side_effect = lambda content, encoding: MagicMock(
-        sha="fake_sha")
+        sha="fake_sha"
+    )
     mock_input_git_tree_element.side_effect = lambda path, mode, type, sha: MagicMock(
-        path=path)
+        path=path
+    )
 
     tree_elements = create_tree_elements(mock_repo, files_to_update)
 
@@ -115,10 +124,12 @@ def test_commit_to_github(mock_logger, mock_create_tree_elements, mock_repo):
     result = commit_to_github(mock_repo, {"README.md": "New Content"})
     TestCase().assertFalse(result)
     mock_logger.error.assert_any_call(
-        "Error occurred while committing to GitHub: %s", "Test ValueError")
+        "Error occurred while committing to GitHub: %s", "Test ValueError"
+    )
 
     mock_repo.get_branch.side_effect = IOError("Test IOError")
     result = commit_to_github(mock_repo, {"README.md": "New Content"})
     TestCase().assertFalse(result)
     mock_logger.error.assert_any_call(
-        "Error occurred while committing to GitHub: %s", "Test IOError")
+        "Error occurred while committing to GitHub: %s", "Test IOError"
+    )

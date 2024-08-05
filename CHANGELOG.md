@@ -1,12 +1,5 @@
 # CHANGELOG
-## v1.0.1 (2024-08-03)
-### Chore
-* chore: Update Wakatime Leaderboards ([`1f9ea05`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/1f9ea05f22a19cd333a82ba3c1635849c6d338dc))
-* chore: Update Pylint Badge ([`5666ec8`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/5666ec84ca7562e2f3c539b1e5099a0aa26e9612))
-### Fix
-* fix: correctly display the country rank ([`2409612`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/2409612ab1d73c183a9715bc551e13806123f0da))
-### Refactor
-* refactor: Update workflow ([`800ed81`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/800ed81e84272af5a43d1ad1a760c69548447128))
+
 ## v1.0.0 (2024-08-03)
 ### Breaking
 * ci: update workflow
