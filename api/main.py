@@ -1,7 +1,6 @@
 """Main Runner Script to fetch the Wakatime Stats & Generate Wakatime Leaderboards Stats"""
 
 import base64
-import json
 import os
 import logging
 import time
@@ -227,16 +226,6 @@ def main():
         logger.error("Key Error (possibly missing data in API response): %s", str(ke))
 
     log_execution_time(start_time)
-
-
-def save_to_file(data, filename):
-    """Save fetched data to a file in JSON format"""
-    if data is not None:
-        with open(filename, "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=4)
-        print(f"Data saved to {filename}")
-    else:
-        print("No data to save")
 
 
 if __name__ == "__main__":
