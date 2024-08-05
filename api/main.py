@@ -21,7 +21,7 @@ WAKATIME_API_KEY = os.environ["INPUT_WAKATIME_API_KEY"]
 REQUEST_TIMEOUT = (25, 30)
 
 # Version Identifier for Changelog
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 
 
 def format_time(seconds):

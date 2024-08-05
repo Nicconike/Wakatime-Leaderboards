@@ -1,5 +1,24 @@
 # CHANGELOG
+## v1.1.0 (2024-08-05)
+### Chore
+* chore: Update Pylint Badge ([`423eeba`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/423eebaea982ee4f8f7868f7110ed10819ed1f97))
+* chore: Update Wakatime Leaderboards ([`39bc443`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/39bc44381cbb664529f58be644e6da4e8a05a5d6))
+* chore: Update Wakatime Leaderboards ([`fd9991c`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/fd9991c678f6c145d2bcd94dc64252b20c86cab3))
+* chore: Update Pylint Badge ([`3eebe92`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/3eebe9254d7e8f9f8083044d495d39df7b83feda))
+* chore: Update Wakatime Leaderboards ([`4c99501`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/4c9950128560c30166cfd6469f51cdfcee35d71b))
+* chore: Update Wakatime Leaderboards ([`1f9ea05`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/1f9ea05f22a19cd333a82ba3c1635849c6d338dc))
+* chore: Update Pylint Badge ([`5666ec8`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/5666ec84ca7562e2f3c539b1e5099a0aa26e9612))
+### Feature
+* feat: Remove Country Leaderboards
 
+test: refactor unit tests ([`0ee6c41`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/0ee6c41b49a1a5590acf86926bab3a998df7b6c7))
+### Fix
+* fix: correctly display the country rank ([`2409612`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/2409612ab1d73c183a9715bc551e13806123f0da))
+### Refactor
+* refactor: Update workflow ([`800ed81`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/800ed81e84272af5a43d1ad1a760c69548447128))
+### Test
+* test: fix test_log_execution_time
+ci: add Git step for release workflow ([`b706c46`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/b706c46086b28b589fc07a4199a29b2fc571e162))
 ## v1.0.0 (2024-08-03)
 ### Breaking
 * ci: update workflow
