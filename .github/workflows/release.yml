@@ -54,6 +54,11 @@ jobs:
                 python -m pip install --upgrade pip
                 pip install python-semantic-release
 
+          - name: Setup Git
+            run: |
+                git fetch origin
+                git reset --hard origin/${{ github.ref_name }}
+
           - name: Semantic Release
             uses: python-semantic-release/python-semantic-release@v9.8.6
             with:

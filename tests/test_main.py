@@ -23,11 +23,25 @@ def test_log_execution_time():
     start_time = time.time() - 65
     with patch("api.main.logger") as mock_logger:
         log_execution_time(start_time)
-        mock_logger.info.assert_any_call(
-            "Total Execution Time: %d minutes and %.3f seconds", 1, 5.0
-        )
+        calls = mock_logger.info.call_args_list
+        if len(calls) != 1:
+            pytest.fail("Expected 1 call to logger.info, got " + str(len(calls)))
+        args, _ = calls[0]
+        if args[0] != "Total Execution Time: %d minutes and %.3f seconds":
+            pytest.fail("Unexpected log format")
+        if args[1] != 1:
+            pytest.fail("Expected 1 minute, got " + str(args[1]))
+        if abs(args[2] - 5.0) >= 0.1:
+            pytest.fail("Expected approximately 5.0 seconds, got " + str(args[2]))
 
     start_time = time.time() - 30
     with patch("api.main.logger") as mock_logger:
         log_execution_time(start_time)
-        mock_logger.info.assert_any_call("Total Execution Time: %.3f seconds", 30.0)
+        calls = mock_logger.info.call_args_list
+        if len(calls) != 1:
+            pytest.fail("Expected 1 call to logger.info, got " + str(len(calls)))
+        args, _ = calls[0]
+        if args[0] != "Total Execution Time: %.3f seconds":
+            pytest.fail("Unexpected log format")
+        if abs(args[1] - 30.0) >= 0.1:
+            pytest.fail("Expected approximately 30.0 seconds, got " + str(args[1]))
