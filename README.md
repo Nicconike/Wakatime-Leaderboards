@@ -79,7 +79,7 @@ jobs:
         steps:
           - name: Run Wakatime Leaderboards
             uses: nicconike/wakatime-leaderboards@master
-            env:
+            with:
                 WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
 ```
 ***
