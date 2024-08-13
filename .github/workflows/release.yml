@@ -12,7 +12,10 @@ on:
 jobs:
     release:
         name: Release
-        if: github.actor != 'dependabot[bot]' || github.actor != 'github-actions[bot]' || github.actor != 'protected-auto-commits[bot]'
+        if: |
+            github.actor != 'dependabot[bot]' &&
+            github.actor != 'github-actions[bot]' &&
+            github.actor != 'protected-auto-commits[bot]'
         runs-on: ubuntu-latest
         concurrency: release
         permissions:

@@ -14,7 +14,10 @@ on:
 jobs:
     update-readme:
         name: Wakatime Leaderboards
-        if: github.actor != 'dependabot[bot]' || github.actor != 'github-actions[bot]' || github.actor != 'protected-auto-commits[bot]'
+        if: |
+            github.actor != 'dependabot[bot]' &&
+            github.actor != 'github-actions[bot]' &&
+            github.actor != 'protected-auto-commits[bot]'
         runs-on: ubuntu-latest
         steps:
           - name: GitHub App Token
