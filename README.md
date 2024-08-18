@@ -32,13 +32,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 4 hrs 47 mins | 41 mins |
+| None | 6 hrs 18 mins | 54 mins |
 
-#### Top Language (Python)
+#### Top Language (YAML)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 2778 | 1 hrs 51 mins | 15 mins |
+| 555 | 3 hrs 19 mins | 28 mins |
 
 
 <!-- Wakatime-End -->
