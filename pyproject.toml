@@ -13,7 +13,7 @@ authors = [
 ]
 dynamic = "version_variables"
 dependencies = [
-    "PyGithub==2.3.0",
+    "PyGithub==2.4.0",
     "python-semantic-release==9.8.7"
 ]
 
