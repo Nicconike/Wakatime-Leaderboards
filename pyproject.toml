@@ -13,13 +13,13 @@ authors = [
 ]
 dynamic = "version_variables"
 dependencies = [
-    "PyGithub==2.3.0",
-    "python-semantic-release==9.8.7"
+    "PyGithub==2.4.0",
+    "python-semantic-release==9.8.8"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pylint==3.2.6",
+    "pylint==3.2.7",
     "pipdeptree==2.23.1",
 ]
 test = [
