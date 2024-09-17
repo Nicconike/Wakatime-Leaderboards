@@ -72,6 +72,7 @@ jobs:
         permissions:
             attestations: write
             id-token: write
+            packages: write
         concurrency:
             group: ${{ github.workflow }}-${{ github.ref }}
             cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
