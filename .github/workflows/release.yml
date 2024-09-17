@@ -134,7 +134,7 @@ jobs:
           - name: Generate Artifact Attestation
             uses: actions/attest-build-provenance@v1
             with:
-                subject-name: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards
+                subject-name: ghcr.io/${{ github.repository_owner }}/Wakatime-Leaderboards
                 subject-digest: ${{ steps.push.outputs.digest }}
                 push-to-registry: true
 
