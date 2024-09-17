@@ -70,15 +70,24 @@ jobs:
     docker:
         name: Docker
         runs-on: ubuntu-latest
+        permissions:
+            attestations: write
+            id-token: write
         concurrency:
             group: ${{ github.workflow }}-${{ github.ref }}
             cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
         needs: release
         steps:
-          - name: Checkout Code
+          - name: Checkout Repo
             uses: actions/checkout@v4
             with:
                 fetch-depth: 0
+
+          - name: Install CoSign
+            if: github.event_name != 'pull_request'
+            uses: sigstore/cosign-installer@v3.6.0
+            with:
+                cosign-release: 'v2.4.0'
 
           - name: Set up Docker Buildx
             uses: docker/setup-buildx-action@v3
@@ -101,6 +110,7 @@ jobs:
                     type=sha
 
           - name: Build & Push Docker Image
+            id: push
             uses: docker/build-push-action@v6
             with:
                 context: .
@@ -113,6 +123,20 @@ jobs:
                 cache-from: type=gha
                 cache-to: type=gha,mode=max
                 file: Dockerfile
+
+          - name: Sign the published Docker Image
+            if: ${{ github.event_name != 'pull_request' }}
+            env:
+                TAGS: ${{ steps.meta.outputs.tags }}
+                DIGEST: ${{ steps.push.outputs.digest }}
+            run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+          - name: Generate Artifact Attestation
+            uses: actions/attest-build-provenance@v1
+            with:
+                subject-name: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards
+                subject-digest: ${{ steps.push.outputs.digest }}
+                push-to-registry: true
 
           - name: Docker Scout Scan
             uses: docker/scout-action@v1.14.0

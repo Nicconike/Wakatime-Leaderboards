@@ -12,7 +12,7 @@
 [![wakatime](https://wakatime.com/badge/user/018e538b-3f55-4e8e-95fa-6c3225418eed/project/0caf06ca-663f-49f6-a95a-6282a945d92b.svg)](https://wakatime.com/badge/user/018e538b-3f55-4e8e-95fa-6c3225418eed/project/0caf06ca-663f-49f6-a95a-6282a945d92b)
 [![Visitor Badge](https://badges.pufler.dev/visits/nicconike/Wakatime-Leaderboards)](https://badges.pufler.dev)
 
-> ### Automated WakaTime leaderboards for your GitHub profile
+> ### Automated WakaTime Leaderboards for your GitHub Profile
 
 ***
 ## Prerequisites
