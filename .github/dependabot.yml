@@ -61,6 +61,6 @@ updates:
       reviewers:
           - "nicconike"
       groups:
-          github-actions:
+          docker:
               patterns:
                   - "*"
