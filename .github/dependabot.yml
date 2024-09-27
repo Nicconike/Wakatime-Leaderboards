@@ -31,10 +31,31 @@ updates:
           interval: "weekly"
       commit-message:
           prefix: "ci"
+          include: "scope"
       labels:
           - dependencies
           - dependabot
           - github_actions
+      rebase-strategy: auto
+      open-pull-requests-limit: 10
+      reviewers:
+          - "nicconike"
+      groups:
+          github-actions:
+              patterns:
+                  - "*"
+
+    - package-ecosystem: "docker"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+      commit-message:
+          prefix: "chore"
+          include: "scope"
+      labels:
+          - dependencies
+          - dependabot
+          - docker
       rebase-strategy: auto
       open-pull-requests-limit: 10
       reviewers:
