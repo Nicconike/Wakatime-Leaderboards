@@ -33,13 +33,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 5161 | 13 hrs 52 mins | 1 hrs 58 mins |
+| None | 14 hrs 33 mins | 2 hrs 4 mins |
 
-#### Top Language (Go)
+#### Top Language (TypeScript)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 173 | 9 hrs 29 mins | 1 hrs 21 mins |
+| 5527 | 6 hrs 5 mins | 52 mins |
 
 
 <!-- Wakatime-End -->
