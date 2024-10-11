@@ -28,7 +28,7 @@ jobs:
                 private-key: ${{ secrets.GH_PRIVATE_KEY }}
 
           - name: Run Wakatime Leaderboards
-            uses: docker://nicconike/wakatime-leaderboards:latest
+            uses: docker://nicconike/wakatime-leaderboards:master
             env:
                 GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
                 GITHUB_REPOSITORY: ${{ github.repository }}

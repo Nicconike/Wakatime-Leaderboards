@@ -70,6 +70,7 @@ jobs:
         name: Docker
         runs-on: ubuntu-latest
         permissions:
+            contents: read
             attestations: write
             id-token: write
             packages: write
@@ -122,21 +123,19 @@ jobs:
                     ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards
                     ghcr.io/${{ github.repository_owner }}/Wakatime-Leaderboards
                 tags: |
-                    type=ref,event=branch
-                    type=ref,event=pr
+                    type=raw,value=master,enable={{is_default_branch}}
                     type=semver,pattern={{version}}
                     type=semver,pattern={{major}}.{{minor}}
-                    type=semver,pattern={{major}}
-                    type=sha
+                    type=semver,pattern={{major}}.{{minor}}.{{patch}}
+                skip-sha: true
 
           - name: Build & Push Docker Image
             id: push
             uses: docker/build-push-action@v6
             with:
                 context: .
-                sbom: ${{ github.event_name != 'pull_request' }}
-                push: ${{ github.event_name != 'pull_request' }}
-                load: ${{ github.event_name == 'pull_request' }}
+                file: ./Dockerfile
+                push: true
                 tags: ${{ steps.meta.outputs.tags }}
                 labels: ${{ steps.meta.outputs.labels }}
                 cache-from: type=gha
@@ -163,10 +162,8 @@ jobs:
             uses: docker/scout-action@v1.14.0
             with:
                 command: quickview, cves
-                image: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:latest
-                to: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:latest
-                only-severities: critical, high
-                only-fixed: true
+                image: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:${{ steps.meta.outputs.tags }}
+                to: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:master
                 write-comment: true
                 github-token: ${{ secrets.GITHUB_TOKEN }}
                 sarif-file: docker-scout-results.sarif
@@ -177,3 +174,60 @@ jobs:
             with:
                 name: docker-scout-results
                 path: docker-scout-results.sarif
+
+    cleanup:
+        runs-on: ubuntu-latest
+        needs: packages
+        permissions:
+            contents: read
+            packages: write
+        steps:
+          - name: Checkout Repo
+            uses: actions/checkout@v4
+
+          - name: Login to Docker Hub
+            uses: docker/login-action@v3
+            with:
+                username: ${{ vars.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_TOKEN }}
+
+          - name: Login to GitHub Container Registry
+            uses: docker/login-action@v3
+            with:
+                registry: ghcr.io
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+
+          - name: List & Delete Old Docker Hub Tags
+            run: |
+                echo "Fetching Docker Hub tags..."
+                tags=$(curl -s "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags" | jq -r '.results[].name')
+                echo "Tags found in Docker Hub:"
+                echo "$tags"
+                latest_tag=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1)
+                echo "Latest semantic version tag is $latest_tag"
+                for tag in $tags; do
+                    if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ || "$tag" != "$latest_tag" ]]; then
+                        echo "Deleting tag $tag from Docker Hub"
+                        curl -X DELETE "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags/$tag/" \
+                        -u "${{ vars.DOCKER_USERNAME }}:${{ secrets.DOCKER_TOKEN }}"
+                    fi
+                done
+
+          - name: Delete Old GHCR Tags
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: |
+                echo "Fetching GHCR tags..."
+                tags=$(gh api "repos/${{ github.repository_owner }}/packages/container/Wakatime-Leaderboards/versions" | jq -r '.[].metadata.container.tags[]')
+                echo "Tags found in GHCR:"
+                echo "$tags"
+                latest_tag=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1)
+                echo "Latest semantic version tag is $latest_tag"
+                for tag in $tags; do
+                    if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ || "$tag" != "$latest_tag" ]]; then
+                        echo "Deleting tag $tag from GHCR"
+                        version_id=$(gh api "repos/${{ github.repository_owner }}/packages/container/Wakatime-Leaderboards/versions" | jq -r ".[] | select(.metadata.container.tags[] == \"$tag\") | .id")
+                        gh api --method DELETE "/user/packages/container/Wakatime-Leaderboards/versions/$version_id"
+                    fi
+                done
