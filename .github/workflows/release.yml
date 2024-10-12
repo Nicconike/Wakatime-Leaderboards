@@ -123,11 +123,10 @@ jobs:
                     ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards
                     ghcr.io/${{ github.repository_owner }}/Wakatime-Leaderboards
                 tags: |
-                    type=raw,value=master,enable={{is_default_branch}}
+                    type=ref,event=branch
                     type=semver,pattern={{version}}
                     type=semver,pattern={{major}}.{{minor}}
                     type=semver,pattern={{major}}.{{minor}}.{{patch}}
-                skip-sha: true
 
           - name: Build & Push Docker Image
             id: push
@@ -161,8 +160,7 @@ jobs:
             uses: docker/scout-action@v1.14.0
             with:
                 command: quickview, cves
-                image: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:${{ steps.meta.outputs.tags }}
-                to: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:master
+                image: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:master
                 write-comment: true
                 github-token: ${{ secrets.GITHUB_TOKEN }}
                 sarif-file: docker-scout-results.sarif
@@ -177,6 +175,7 @@ jobs:
     cleanup:
         runs-on: ubuntu-latest
         needs: docker
+        name: Cleanup
         permissions:
             contents: read
             packages: write
