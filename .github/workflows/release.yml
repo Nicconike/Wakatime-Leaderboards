@@ -182,7 +182,6 @@ jobs:
         permissions:
             contents: read
             packages: write
-            delete:packages: true
         steps:
           - name: Checkout Repo
             uses: actions/checkout@v4
