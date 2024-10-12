@@ -168,10 +168,10 @@ def get_readme_content(repo):
 
 def update_wakatime_stats():
     """Function to update Wakatime stats in README"""
-    repo = initialize_github()
     if not WAKATIME_API_KEY:
         raise ValueError("WAKATIME_API_KEY environment variable not set")
 
+    repo = initialize_github()
     leaderboards = get_leaderboards(WAKATIME_API_KEY)
     formatted_data = format_leaderboard_data(leaderboards)
 

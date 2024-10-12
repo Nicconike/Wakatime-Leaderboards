@@ -32,6 +32,15 @@ def mock_dependencies(mocker):
     return fixtures
 
 
+@patch("api.main.WAKATIME_API_KEY", None)
+def test_handle_no_wakatime_api_key():
+    """Test when WAKATIME_API_KEY is not set."""
+    with pytest.raises(
+        ValueError, match="WAKATIME_API_KEY environment variable not set"
+    ):
+        update_wakatime_stats()
+
+
 def test_format_time():
     """Test format_time function"""
     if format_time(60) != "1 min":
@@ -377,15 +386,6 @@ def test_update_wakatime_stats(
             ValueError, match="WAKATIME_API_KEY environment variable not set"
         ):
             update_wakatime_stats()
-
-
-@patch("api.main.WAKATIME_API_KEY", None)
-def test_handle_no_wakatime_api_key():
-    """Test when WAKATIME_API_KEY is not set."""
-    with pytest.raises(
-        ValueError, match="WAKATIME_API_KEY environment variable not set"
-    ):
-        update_wakatime_stats()
 
 
 def test_log_execution_time():

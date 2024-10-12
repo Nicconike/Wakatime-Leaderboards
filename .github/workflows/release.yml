@@ -3,6 +3,8 @@ name: Release
 on:
     push:
         branches: master
+        tags:
+            - 'v*'
         paths:
             - '.github/workflows/release.yml'
             - 'api/*.py'
@@ -124,6 +126,7 @@ jobs:
                     ghcr.io/${{ github.repository_owner }}/Wakatime-Leaderboards
                 tags: |
                     type=ref,event=branch
+                    type=ref,event=tag
                     type=semver,pattern={{version}}
                     type=semver,pattern={{major}}.{{minor}}
                     type=semver,pattern={{major}}.{{minor}}.{{patch}}
@@ -179,6 +182,7 @@ jobs:
         permissions:
             contents: read
             packages: write
+            delete:packages: true
         steps:
           - name: Checkout Repo
             uses: actions/checkout@v4
@@ -199,7 +203,7 @@ jobs:
           - name: List & Delete Old Docker Hub Tags
             run: |
                 echo "Fetching Docker Hub tags..."
-                tags=$(curl -s "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags" | jq -r '.results[].name')
+                tags=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKER_TOKEN }}" "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags" | jq -r '.results[].name')
                 echo "Tags found in Docker Hub:"
                 echo "$tags"
                 latest_tag=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1)
@@ -207,25 +211,34 @@ jobs:
                 for tag in $tags; do
                     if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ || "$tag" != "$latest_tag" ]]; then
                         echo "Deleting tag $tag from Docker Hub"
-                        curl -X DELETE "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags/$tag/" \
-                        -u "${{ vars.DOCKER_USERNAME }}:${{ secrets.DOCKER_TOKEN }}"
+                        curl -X DELETE -H "Authorization: Bearer ${{ secrets.DOCKER_TOKEN }}" "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags/$tag/"
                     fi
                 done
 
           - name: Delete Old GHCR Tags
             env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                REPO_OWNER: ${{ github.repository_owner }}
+                PACKAGE_NAME: "wakatime-leaderboards"
             run: |
                 echo "Fetching GHCR tags..."
-                tags=$(gh api "repos/${{ github.repository_owner }}/packages/container/Wakatime-Leaderboards/versions" | jq -r '.[].metadata.container.tags[]')
+                tags=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+                "https://api.github.com/user/packages/container/$PACKAGE_NAME/versions" | jq -r '.[].metadata.container.tags[]')
                 echo "Tags found in GHCR:"
                 echo "$tags"
                 latest_tag=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1)
                 echo "Latest semantic version tag is $latest_tag"
                 for tag in $tags; do
-                    if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ || "$tag" != "$latest_tag" ]]; then
-                        echo "Deleting tag $tag from GHCR"
-                        version_id=$(gh api "repos/${{ github.repository_owner }}/packages/container/Wakatime-Leaderboards/versions" | jq -r ".[] | select(.metadata.container.tags[] == \"$tag\") | .id")
-                        gh api --method DELETE "/user/packages/container/Wakatime-Leaderboards/versions/$version_id"
+                if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ || "$tag" != "$latest_tag" ]]; then
+                    echo "Deleting tag $tag from GHCR"
+                    version_id=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+                    "https://api.github.com/user/packages/container/$PACKAGE_NAME/versions" | \
+                    jq -r ".[] | select(.metadata.container.tags[] == \"$tag\") | .id")
+                    if [ -n "$version_id" ]; then
+                    curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" \
+                        "https://api.github.com/user/packages/container/$PACKAGE_NAME/versions/$version_id"
+                    else
+                    echo "Warning: Could not find version ID for tag $tag"
                     fi
+                fi
                 done
