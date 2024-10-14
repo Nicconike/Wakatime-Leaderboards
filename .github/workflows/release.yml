@@ -64,7 +64,7 @@ jobs:
                 git reset --hard origin/${{ github.ref_name }}
 
           - name: Semantic Release
-            uses: python-semantic-release/python-semantic-release@v9.9.0
+            uses: python-semantic-release/python-semantic-release@v9.11.0
             with:
                 github_token: ${{ steps.app-token.outputs.token }}
 
