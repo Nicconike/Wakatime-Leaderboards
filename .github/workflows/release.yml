@@ -25,6 +25,8 @@ jobs:
             contents: write
             issues: write
             pull-requests: write
+        outputs:
+            new_release_version: ${{ steps.semantic.outputs.version }}
         steps:
           - name: GitHub App Token
             uses: actions/create-github-app-token@v1
@@ -65,6 +67,7 @@ jobs:
 
           - name: Semantic Release
             uses: python-semantic-release/python-semantic-release@v9.11.0
+            id: semantic
             with:
                 github_token: ${{ steps.app-token.outputs.token }}
 
@@ -117,6 +120,14 @@ jobs:
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
 
+          - name: Get latest Release
+            id: get_latest_release
+            run: |
+                latest_release=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+                echo "LATEST_RELEASE=${latest_release}" >> $GITHUB_ENV
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
           - name: Extract Docker Metadata
             id: meta
             uses: docker/metadata-action@v5
@@ -125,11 +136,8 @@ jobs:
                     ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards
                     ghcr.io/${{ github.repository_owner }}/Wakatime-Leaderboards
                 tags: |
-                    type=ref,event=branch
-                    type=ref,event=tag
-                    type=semver,pattern={{version}}
-                    type=semver,pattern={{major}}.{{minor}}
-                    type=semver,pattern={{major}}.{{minor}}.{{patch}}
+                    type=raw,value=master
+                    type=raw,value=${{ env.LATEST_RELEASE }}
 
           - name: Build & Push Docker Image
             id: push
@@ -199,7 +207,7 @@ jobs:
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
 
-          - name: List & Delete Old Docker Hub Tags
+          - name: Delete Old Docker Hub Tags
             run: |
                 echo "Fetching Docker Hub tags..."
                 tags=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKER_TOKEN }}" "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags" | jq -r '.results[].name')
@@ -208,9 +216,11 @@ jobs:
                 latest_tag=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1)
                 echo "Latest semantic version tag is $latest_tag"
                 for tag in $tags; do
-                    if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ || "$tag" != "$latest_tag" ]]; then
+                    if [[ "$tag" != "master" && "$tag" != "$latest_tag" ]]; then
                         echo "Deleting tag $tag from Docker Hub"
                         curl -X DELETE -H "Authorization: Bearer ${{ secrets.DOCKER_TOKEN }}" "https://hub.docker.com/v2/repositories/${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards/tags/$tag/"
+                    else
+                        echo "Keeping tag $tag"
                     fi
                 done
 
@@ -228,16 +238,18 @@ jobs:
                 latest_tag=$(echo "$tags" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -rV | head -n 1)
                 echo "Latest semantic version tag is $latest_tag"
                 for tag in $tags; do
-                if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ || "$tag" != "$latest_tag" ]]; then
-                    echo "Deleting tag $tag from GHCR"
-                    version_id=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
-                    "https://api.github.com/user/packages/container/$PACKAGE_NAME/versions" | \
-                    jq -r ".[] | select(.metadata.container.tags[] == \"$tag\") | .id")
-                    if [ -n "$version_id" ]; then
-                    curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" \
-                        "https://api.github.com/user/packages/container/$PACKAGE_NAME/versions/$version_id"
+                    if [[ "$tag" != "master" && "$tag" != "$latest_tag" ]]; then
+                        echo "Deleting tag $tag from GHCR"
+                        version_id=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+                        "https://api.github.com/user/packages/container/$PACKAGE_NAME/versions" | \
+                        jq -r ".[] | select(.metadata.container.tags[] == \"$tag\") | .id")
+                        if [ -n "$version_id" ]; then
+                            curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" \
+                                "https://api.github.com/user/packages/container/$PACKAGE_NAME/versions/$version_id"
+                        else
+                            echo "Warning: Could not find version ID for tag $tag"
+                        fi
                     else
-                    echo "Warning: Could not find version ID for tag $tag"
+                        echo "Keeping tag $tag"
                     fi
-                fi
                 done
