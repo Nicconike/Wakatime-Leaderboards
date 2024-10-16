@@ -74,7 +74,7 @@ jobs:
     docker:
         name: Docker
         runs-on: ubuntu-latest
-        # if: needs.semantic-release.outputs.new_release_version != ''
+        if: needs.semantic-release.outputs.new_release_version != ''
         permissions:
             contents: read
             attestations: write
