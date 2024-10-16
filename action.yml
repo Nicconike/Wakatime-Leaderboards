@@ -11,7 +11,7 @@ inputs:
         required: true
 runs:
     using: docker
-    image: "docker://nicconike/wakatime-leaderboards:latest"
+    image: "docker://nicconike/wakatime-leaderboards:master"
 branding:
     icon: activity
     color: blue
