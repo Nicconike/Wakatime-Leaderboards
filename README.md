@@ -33,13 +33,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 10 hrs 19 mins | 1 hr 28 mins |
+| None | 5 hrs 51 mins | 50 mins |
 
-#### Top Language (JavaScript)
+#### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 4 hrs 4 mins | 34 mins |
+| 3002 | 3 hrs 42 mins | 31 mins |
 
 
 <!-- Wakatime-End -->
