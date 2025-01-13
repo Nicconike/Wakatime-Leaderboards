@@ -7,25 +7,16 @@ name = "Wakatime-Leaderboards"
 description = "Automated WakaTime leaderboards for your GitHub profile"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 authors = [
-    {name = "Nicco", email = "38905025+Nicconike@users.noreply.github.com"},
+    { name = "Nicco", email = "38905025+Nicconike@users.noreply.github.com" },
 ]
-dynamic = "version_variables"
-dependencies = [
-    "PyGithub==2.4.0",
-    "python-semantic-release==9.12.0"
-]
+dynamic = ["version"]
+dependencies = ["PyGithub==2.5.0", "python-semantic-release==9.16.1"]
 
 [project.optional-dependencies]
-dev = [
-    "pylint==3.3.1",
-    "pipdeptree==2.23.4",
-]
-test = [
-    "pytest-cov==6.0.0",
-    "pytest-mock==3.14.0"
-]
+dev = ["pylint==3.3.3", "pipdeptree==2.24.0"]
+test = ["pytest-cov==6.0.0"]
 
 [project.urls]
 Homepage = "https://github.com/nicconike/wakatime-leaderboards"
@@ -40,7 +31,19 @@ branch = "master"
 changelog_file = "CHANGELOG.md"
 
 [tool.semantic_release.commit_parser_options]
-allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test", "revert"]
+allowed_tags = [
+    "build",
+    "chore",
+    "ci",
+    "docs",
+    "feat",
+    "fix",
+    "perf",
+    "style",
+    "refactor",
+    "test",
+    "revert",
+]
 minor_tags = ["feat"]
 patch_tags = ["fix", "perf"]
 default_bump_level = 0
@@ -51,9 +54,6 @@ token = { env = "GH_TOKEN" }
 
 [tool.semantic_release.publish]
 upload_to_vcs_release = true
-dist_glob_patterns = [
-    "dist/*"
-]
 
 [tool.semantic_release.changelog]
 changelog_file = "CHANGELOG.md"
@@ -62,26 +62,10 @@ changelog_file = "CHANGELOG.md"
 trim_blocks = true
 
 [tool.semantic_release.plugins]
-verify_conditions = [
-    "@semantic-release/git",
-    "@semantic-release/github"
-]
-analyze_commits = [
-    "@semantic-release/commit-analyzer"
-]
-generate_notes = [
-    "@semantic-release/release-notes-generator"
-]
-prepare = [
-    "@semantic-release/changelog",
-    "@semantic-release/git"
-]
-publish = [
-    "@semantic-release/github"
-]
-success = [
-    "@semantic-release/github"
-]
-fail = [
-    "@semantic-release/github"
-]
+verify_conditions = ["@semantic-release/git", "@semantic-release/github"]
+analyze_commits = ["@semantic-release/commit-analyzer"]
+generate_notes = ["@semantic-release/release-notes-generator"]
+prepare = ["@semantic-release/changelog", "@semantic-release/git"]
+publish = ["@semantic-release/github"]
+success = ["@semantic-release/github"]
+fail = ["@semantic-release/github"]
