@@ -8,10 +8,7 @@ import time
 import requests
 from github import GithubException
 from api.utils import initialize_github, commit_to_github
-from dotenv import load_dotenv
 
-load_dotenv()
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )

@@ -66,72 +66,74 @@ def test_format_time():
         pytest.fail("Expected '59 mins' for 3599 seconds")
 
 
-@patch("api.main.time.sleep")
-@patch("api.main.requests.get")
-def test_get_wakatime_stats(mock_get, mock_sleep):
-    """Test get_wakatime_stats with various HTTP responses."""
+def test_successful_requests(mock_get):
+    """Test successful responses from the API"""
     mock_response_1 = MagicMock()
     mock_response_1.status_code = 200
     mock_response_1.json.return_value = {"data": {"total_seconds": 3600}}
     mock_get.return_value = mock_response_1
     result = get_wakatime_stats("fake_api_key")
-    if result != {"total_seconds": 3600}:
-        pytest.fail(f"Expected {{'total_seconds': 3600}}, got {result}")
+    assert result == {
+        "total_seconds": 3600
+    }, f"Expected {{'total_seconds': 3600}}, got {result}"
 
     mock_response_2 = MagicMock()
     mock_response_2.status_code = 200
     mock_response_2.json.return_value = {"data": {"total_seconds": 0}}
     mock_get.return_value = mock_response_2
     result = get_wakatime_stats("fake_api_key")
-    if result is not None:
-        pytest.fail(f"Expected None when total_seconds=0, got {result}")
+    assert result is None, f"Expected None when total_seconds=0, got {result}"
 
-    mock_response_202 = MagicMock()
-    mock_response_202.status_code = 202
-    mock_response_200_after = MagicMock()
-    mock_response_200_after.status_code = 200
-    mock_response_200_after.json.return_value = {"data": {"total_seconds": 180}}
-    mock_get.side_effect = [mock_response_202, mock_response_200_after]
+
+def test_retries_and_errors(mock_get):
+    """Test retries and error handling"""
+    mock_response_202 = MagicMock(status_code=202)
+    mock_response_200 = MagicMock(
+        status_code=200, json=lambda: {"data": {"total_seconds": 180}}
+    )
+    mock_get.side_effect = [mock_response_202, mock_response_200]
     result = get_wakatime_stats("fake_api_key")
-    if result != {"total_seconds": 180}:
-        pytest.fail(f"Expected {{'total_seconds': 180}} after 202→200, got {result}")
+    assert result == {
+        "total_seconds": 180
+    }, f"Expected {{'total_seconds': 180}}, got {result}"
 
-    mock_response_500 = MagicMock()
-    mock_response_500.status_code = 500
-    mock_response_200_final = MagicMock()
-    mock_response_200_final.status_code = 200
-    mock_response_200_final.json.return_value = {"data": {"total_seconds": 900}}
-    mock_get.side_effect = [mock_response_500, mock_response_200_final]
+    mock_response_500 = MagicMock(status_code=500)
+    mock_response_200 = MagicMock(
+        status_code=200, json=lambda: {"data": {"total_seconds": 900}}
+    )
+    mock_get.side_effect = [mock_response_500, mock_response_200]
     result = get_wakatime_stats("fake_api_key")
-    if result != {"total_seconds": 900}:
-        pytest.fail(f"Expected {{'total_seconds': 900}} after 500→200, got {result}")
+    assert result == {
+        "total_seconds": 900
+    }, f"Expected {{'total_seconds': 900}}, got {result}"
 
-    mock_response_404 = MagicMock()
-    mock_response_404.status_code = 404
+    mock_response_404 = MagicMock(status_code=404)
     mock_get.side_effect = [mock_response_404]
-    with pytest.raises(ValueError) as exc_404:
-        get_wakatime_stats("fake_api_key")
-    if "Client error 404. Check your API key or request" not in str(exc_404.value):
-        pytest.fail(f"Unexpected error message for 404: {exc_404.value}")
-
-    mock_response_302 = MagicMock()
-    mock_response_302.status_code = 302
-    mock_get.side_effect = [mock_response_302]
-    with pytest.raises(ValueError) as exc_302:
-        get_wakatime_stats("fake_api_key")
-    if "Unexpected Status Code: 302" not in str(exc_302.value):
-        pytest.fail(f"Unexpected error message for 302: {exc_302.value}")
-
-    mock_response_202_repeated = MagicMock()
-    mock_response_202_repeated.status_code = 202
-    mock_get.side_effect = [mock_response_202_repeated] * 5
-    with pytest.raises(ValueError) as exc_retries:
-        get_wakatime_stats("fake_api_key")
-    if (
-        "Failed to fetch user stats after 5 retries without receiving a 200 status"
-        not in str(exc_retries.value)
+    with pytest.raises(
+        ValueError, match="Client error 404. Check your API key or request"
     ):
-        pytest.fail(f"Unexpected error message for retries: {exc_retries.value}")
+        get_wakatime_stats("fake_api_key")
+
+    mock_response_302 = MagicMock(status_code=302)
+    mock_get.side_effect = [mock_response_302]
+    with pytest.raises(ValueError, match="Unexpected Status Code: 302"):
+        get_wakatime_stats("fake_api_key")
+
+    mock_response_202_repeated = MagicMock(status_code=202)
+    mock_get.side_effect = [mock_response_202_repeated] * 5
+    with pytest.raises(
+        ValueError,
+        match="Failed to fetch user stats after 5 retries without receiving a 200 status",
+    ):
+        get_wakatime_stats("fake_api_key")
+
+
+@patch("api.main.time.sleep")
+@patch("api.main.requests.get")
+def test_get_wakatime_stats(mock_get, mock_sleep):
+    """Test get_wakatime_stats with various HTTP responses."""
+    test_successful_requests(mock_get)
+    test_retries_and_errors(mock_get)
 
 
 @patch("api.main.get_wakatime_stats")
@@ -286,132 +288,97 @@ def test_update_readme():
 
 def test_get_readme_content():
     """Test get_readme_content function"""
-    # Test when get_contents returns a single file
     mock_repo = MagicMock()
     mock_file = MagicMock()
     mock_file.decoded_content.decode.return_value = "Single README content"
     mock_repo.get_contents.return_value = mock_file
-
     result = get_readme_content(mock_repo)
     if result != "Single README content":
         pytest.fail("Unexpected result when get_contents returns a single file")
 
-    # Test when get_contents returns a list of files
     mock_file_list = [MagicMock()]
     mock_file_list[0].decoded_content.decode.return_value = "List README content"
     mock_repo.get_contents.return_value = mock_file_list
-
     result = get_readme_content(mock_repo)
     if result != "List README content":
         pytest.fail("Unexpected result when get_contents returns a list of files")
 
-    # Test that the correct README constant is used
     mock_repo.get_contents.reset_mock()
     mock_repo.get_contents.return_value = mock_file
     get_readme_content(mock_repo)
     mock_repo.get_contents.assert_called_once_with(README)
 
 
+@patch("api.main.logger")
 @patch("api.main.initialize_github")
 @patch("api.main.get_leaderboards")
 @patch("api.main.format_leaderboard_data")
 @patch("api.main.update_readme")
 @patch("api.main.get_readme_content")
 @patch("api.main.commit_to_github")
-@patch("api.main.logger")
 def test_update_wakatime_stats(
-    mock_logger,
     mock_commit,
     mock_get_readme,
     mock_update,
     mock_format,
     mock_get_leaderboards,
     mock_init,
+    mock_logger,
 ):
-    """Test update_wakatime_stats function"""
-
-    # Setup
+    """Test the normal flow of update_wakatime_stats"""
     mock_repo = MagicMock()
     mock_init.return_value = mock_repo
-
-    # Test case: Normal flow with updates
     mock_get_leaderboards.return_value = {"total_coding_time": 3600}
     mock_format.return_value = "Formatted data"
     mock_update.return_value = "New section"
     mock_get_readme.return_value = "Old README"
     mock_commit.return_value = True
-
     update_wakatime_stats()
-
-    if not mock_commit.called:
-        pytest.fail("commit_to_github was not called when it should have been")
+    mock_commit.assert_called_once()
     mock_logger.info.assert_called_with("Updated README with Wakatime Leaderboards")
 
-    # Reset mocks
-    mock_logger.reset_mock()
-    mock_commit.reset_mock()
-    mock_get_readme.reset_mock()
-    mock_update.reset_mock()
-    mock_format.reset_mock()
-    mock_get_leaderboards.reset_mock()
 
-    # Test case: No coding activity
+@patch("api.main.logger")
+@patch("api.main.get_leaderboards")
+@patch("api.main.update_readme")
+@patch("api.main.get_readme_content")
+@patch("api.main.commit_to_github")
+def test_no_coding_activity(
+    mock_commit, mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
+):
+    """Test no coding activity scenario"""
     mock_get_leaderboards.return_value = {"total_coding_time": 0}
-
     update_wakatime_stats()
-
     mock_logger.info.assert_called_with("No coding activity detected in the past week.")
-    if mock_update.called or mock_get_readme.called or mock_commit.called:
-        pytest.fail(
-            "Unexpected functions were called when no coding activity was detected"
-        )
+    mock_commit.assert_not_called()
+    mock_get_readme.assert_not_called()
+    mock_update.assert_not_called()
 
-    # Reset mocks
-    mock_logger.reset_mock()
-    mock_commit.reset_mock()
-    mock_get_readme.reset_mock()
-    mock_update.reset_mock()
-    mock_format.reset_mock()
-    mock_get_leaderboards.reset_mock()
 
-    # Test case: No changes needed in README
+@patch("api.main.logger")
+@patch("api.main.get_leaderboards")
+@patch("api.main.update_readme")
+@patch("api.main.get_readme_content")
+def test_no_changes_needed(
+    mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
+):
+    """Test scenario where no changes are needed in the README."""
     mock_get_leaderboards.return_value = {"total_coding_time": 3600}
     mock_update.return_value = None
-
     update_wakatime_stats()
-
     mock_logger.info.assert_called_with("No changes needed in README")
-    if mock_commit.called:
-        pytest.fail("commit_to_github was called when no changes were needed")
+    mock_get_readme.assert_not_called()
 
-    # Reset mocks
-    mock_logger.reset_mock()
-    mock_commit.reset_mock()
-    mock_get_readme.reset_mock()
-    mock_update.reset_mock()
-    mock_format.reset_mock()
-    mock_get_leaderboards.reset_mock()
 
-    # Test case: Failed to retrieve README content
-    mock_get_leaderboards.return_value = {"total_coding_time": 3600}
-    mock_update.return_value = "New section"
-    mock_get_readme.return_value = None
-
-    update_wakatime_stats()
-
-    mock_logger.error.assert_called_with("Failed to retrieve README content.")
-    if mock_commit.called:
-        pytest.fail("commit_to_github was called when README content retrieval failed")
-
-    # Reset mocks
-    mock_logger.reset_mock()
-    mock_commit.reset_mock()
-    mock_get_readme.reset_mock()
-    mock_update.reset_mock()
-    mock_format.reset_mock()
-    mock_get_leaderboards.reset_mock()
-
-    # Test case: Failed to commit changes
+@patch("api.main.logger")
+@patch("api.main.get_leaderboards")
+@patch("api.main.update_readme")
+@patch("api.main.get_readme_content")
+@patch("api.main.commit_to_github")
+def test_failed_commit(
+    mock_commit, mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
+):
+    """Test scenario where commit fails."""
     mock_get_leaderboards.return_value = {"total_coding_time": 3600}
     mock_update.return_value = "New section"
     mock_get_readme.return_value = "Old README"
@@ -421,12 +388,14 @@ def test_update_wakatime_stats(
 
     mock_logger.error.assert_called_with("Failed to commit changes to GitHub")
 
-    # Test case: WAKATIME_API_KEY not set
-    with patch("api.main.WAKATIME_API_KEY", None):
-        with pytest.raises(
-            ValueError, match="WAKATIME_API_KEY environment variable not set"
-        ):
-            update_wakatime_stats()
+
+@patch("api.main.WAKATIME_API_KEY", None)
+def test_missing_api_key():
+    """Test scenario where WAKATIME_API_KEY is not set"""
+    with pytest.raises(
+        ValueError, match="WAKATIME_API_KEY environment variable not set"
+    ):
+        update_wakatime_stats()
 
 
 def test_log_execution_time():
@@ -466,8 +435,6 @@ def test_main(
     mock_logger, mock_log_execution_time, mock_update_wakatime_stats, mock_time
 ):
     """Test main function"""
-
-    # Set up mock time
     mock_time.return_value = 1000
 
     # Test normal execution
