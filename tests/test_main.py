@@ -66,31 +66,72 @@ def test_format_time():
         pytest.fail("Expected '59 mins' for 3599 seconds")
 
 
+@patch("api.main.time.sleep")
 @patch("api.main.requests.get")
-def test_get_wakatime_stats(mock_get):
-    """Test get_wakatime_stats function"""
-    mock_response = MagicMock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = {"data": {"total_seconds": 3600}}
-    mock_get.return_value = mock_response
-
+def test_get_wakatime_stats(mock_get, mock_sleep):
+    """Test get_wakatime_stats with various HTTP responses."""
+    mock_response_1 = MagicMock()
+    mock_response_1.status_code = 200
+    mock_response_1.json.return_value = {"data": {"total_seconds": 3600}}
+    mock_get.return_value = mock_response_1
     result = get_wakatime_stats("fake_api_key")
     if result != {"total_seconds": 3600}:
-        pytest.fail("Unexpected result from get_wakatime_stats")
+        pytest.fail(f"Expected {{'total_seconds': 3600}}, got {result}")
 
-    mock_response.json.return_value = {"data": {"total_seconds": 0}}
+    mock_response_2 = MagicMock()
+    mock_response_2.status_code = 200
+    mock_response_2.json.return_value = {"data": {"total_seconds": 0}}
+    mock_get.return_value = mock_response_2
     result = get_wakatime_stats("fake_api_key")
     if result is not None:
-        pytest.fail("Expected None for zero total_seconds")
+        pytest.fail(f"Expected None when total_seconds=0, got {result}")
 
-    mock_response.status_code = 404
-    mock_get.return_value = mock_response
-    try:
+    mock_response_202 = MagicMock()
+    mock_response_202.status_code = 202
+    mock_response_200_after = MagicMock()
+    mock_response_200_after.status_code = 200
+    mock_response_200_after.json.return_value = {"data": {"total_seconds": 180}}
+    mock_get.side_effect = [mock_response_202, mock_response_200_after]
+    result = get_wakatime_stats("fake_api_key")
+    if result != {"total_seconds": 180}:
+        pytest.fail(f"Expected {{'total_seconds': 180}} after 202→200, got {result}")
+
+    mock_response_500 = MagicMock()
+    mock_response_500.status_code = 500
+    mock_response_200_final = MagicMock()
+    mock_response_200_final.status_code = 200
+    mock_response_200_final.json.return_value = {"data": {"total_seconds": 900}}
+    mock_get.side_effect = [mock_response_500, mock_response_200_final]
+    result = get_wakatime_stats("fake_api_key")
+    if result != {"total_seconds": 900}:
+        pytest.fail(f"Expected {{'total_seconds': 900}} after 500→200, got {result}")
+
+    mock_response_404 = MagicMock()
+    mock_response_404.status_code = 404
+    mock_get.side_effect = [mock_response_404]
+    with pytest.raises(ValueError) as exc_404:
         get_wakatime_stats("fake_api_key")
-        pytest.fail("Expected ValueError was not raised")
-    except ValueError as e:
-        if str(e) != "Failed to fetch user stats: 404":
-            pytest.fail("Unexpected error message: " + str(e))
+    if "Client error 404. Check your API key or request" not in str(exc_404.value):
+        pytest.fail(f"Unexpected error message for 404: {exc_404.value}")
+
+    mock_response_302 = MagicMock()
+    mock_response_302.status_code = 302
+    mock_get.side_effect = [mock_response_302]
+    with pytest.raises(ValueError) as exc_302:
+        get_wakatime_stats("fake_api_key")
+    if "Unexpected Status Code: 302" not in str(exc_302.value):
+        pytest.fail(f"Unexpected error message for 302: {exc_302.value}")
+
+    mock_response_202_repeated = MagicMock()
+    mock_response_202_repeated.status_code = 202
+    mock_get.side_effect = [mock_response_202_repeated] * 5
+    with pytest.raises(ValueError) as exc_retries:
+        get_wakatime_stats("fake_api_key")
+    if (
+        "Failed to fetch user stats after 5 retries without receiving a 200 status"
+        not in str(exc_retries.value)
+    ):
+        pytest.fail(f"Unexpected error message for retries: {exc_retries.value}")
 
 
 @patch("api.main.get_wakatime_stats")

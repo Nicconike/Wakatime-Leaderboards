@@ -1,13 +1,16 @@
 """Main Runner Script to fetch the latest stats & generate the Wakatime Leaderboards"""
 
 import base64
+import math
 import os
 import logging
 import time
 import requests
 from github import GithubException
 from api.utils import initialize_github, commit_to_github
+from dotenv import load_dotenv
 
+load_dotenv()
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -45,15 +48,37 @@ def format_time(seconds):
 
 
 def get_wakatime_stats(api_key):
-    """Get current user's Wakatime stats"""
+    """
+    Fetch WakaTime stats for current user by polling until the server returns 200 OK or we
+    exhaust retries. Uses exponential backoff to handle 202 responses and potential 5xx errors
+    """
     url = "https://wakatime.com/api/v1/users/current/stats/last_7_days"
     auth_string = "Basic " + base64.b64encode(api_key.encode()).decode()
     headers = {"Authorization": auth_string}
-    response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
-    if response.status_code == 200:
-        data = response.json().get("data", {})
-        return None if not data or data.get("total_seconds", 0) == 0 else data
-    raise ValueError("Failed to fetch user stats: " + str(response.status_code))
+    attempt = 0
+    delay = 3
+
+    while attempt < 5:
+        attempt += 1
+        response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            data = response.json().get("data", {})
+            return None if not data or data.get("total_seconds", 0) == 0 else data
+
+        if response.status_code == 202 or (500 <= response.status_code < 600):
+            time.sleep(delay)
+            delay = math.ceil(delay * 1.5)
+            continue
+
+        if 400 <= response.status_code < 500:
+            raise ValueError(
+                f"Client error {response.status_code}. Check your API key or request"
+            )
+        raise ValueError(f"Unexpected Status Code: {response.status_code}")
+
+    raise ValueError(
+        "Failed to fetch user stats after 5 retries without receiving a 200 status"
+    )
 
 
 def get_leaderboards(api_key):
@@ -75,7 +100,6 @@ def get_leaderboards(api_key):
     languages = stats.get("languages", [])
     top_language = languages[0]["name"] if languages else None
     total_coding_time = stats.get("total_seconds", 0)
-
     leaderboards = {
         "total_coding_time": total_coding_time,
         "top_language": top_language,
@@ -98,7 +122,6 @@ def get_leaderboards(api_key):
 def format_leaderboard_data(leaderboards):
     """Format Leaderboard Stats Data"""
     markdown = "### Wakatime Leaderboards (Worldwide)\n\n"
-
     total_coding_time = leaderboards["total_coding_time"]
     if total_coding_time == 0:
         return markdown + "No coding activity detected in the past week.\n\n"
@@ -135,7 +158,6 @@ def update_readme(repo, markdown_data, start_marker, end_marker):
     try:
         readme_file = repo.get_contents(README)
         readme_content = readme_file.decoded_content.decode("utf-8")
-
         start_index = readme_content.find(start_marker)
         end_index = readme_content.find(end_marker, start_index)
 
@@ -182,7 +204,6 @@ def update_wakatime_stats():
 
     start_marker = "<!-- Wakatime-Start -->"
     end_marker = "<!-- Wakatime-End -->"
-
     new_section_content = update_readme(repo, formatted_data, start_marker, end_marker)
 
     if new_section_content:
