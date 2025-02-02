@@ -1,6 +1,61 @@
 # CHANGELOG
 
 
+## v1.2.2 (2025-02-02)
+
+### Bug Fixes
+
+- Update Dockerfile to use non-root user and adjust file ownership;
+  ([`2b7a134`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/2b7a13459c6582d8c022296e03bb97a89c9992e1))
+
+Addresses the security hotspot in Dockerfile tests: add new tests for error handling functions
+
+### Chores
+
+- Update Pylint Badge
+  ([`43e7214`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/43e7214eca61909e7e388467930deca9e8371ef7))
+
+- Update Pylint Badge
+  ([`57e7995`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/57e79957c768e38a38f12c995a923f1623a11952))
+
+- Update Wakatime Leaderboards
+  ([`2fc6640`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/2fc664099105ecd97b4735c3ed0e92e8cc6a7cf1))
+
+- Update Wakatime Leaderboards
+  ([`1353571`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/135357199e559892c1d0133d7b4a85c377cbc324))
+
+- Update Wakatime Leaderboards
+  ([`75dcfff`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/75dcfff59c2495afa51575618429d044335e4c2d))
+
+- **deps**: Bump the python-packages group across 1 directory with 3 updates
+  ([#33](https://github.com/Nicconike/Wakatime-Leaderboards/pull/33),
+  [`24e6591`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/24e659102c03e11bff9dedd873b8de491170407d))
+
+Bumps the python-packages group with 3 updates in the / directory:
+  [python-semantic-release](https://github.com/python-semantic-release/python-semantic-release),
+  [pylint](https://github.com/pylint-dev/pylint) and
+  [pipdeptree](https://github.com/tox-dev/pipdeptree).
+
+Updates `python-semantic-release` from 9.16.1 to 9.17.0 Updates `pylint` from 3.3.3 to 3.3.4 Updates
+  `pipdeptree` from 2.24.0 to 2.25.0
+
+### Continuous Integration
+
+- **deps**: Bump python-semantic-release/python-semantic-release
+  ([#31](https://github.com/Nicconike/Wakatime-Leaderboards/pull/31),
+  [`8866ab1`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/8866ab168a59fb74e8eecc73a146a8122339032a))
+
+Bumps the github-actions group with 1 update:
+  [python-semantic-release/python-semantic-release](https://github.com/python-semantic-release/python-semantic-release).
+
+Updates `python-semantic-release/python-semantic-release` from 9.16.1 to 9.17.0
+
+### Refactoring
+
+- Refactor unit tests and remove dotenv
+  ([`ba560e0`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/ba560e00e515292291139675b31f5d4f8ea10c08))
+
+
 ## v1.2.1 (2025-01-14)
 
 ### Bug Fixes
