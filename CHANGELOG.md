@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v1.2.3 (2025-02-02)
+
+### Bug Fixes
+
+- Update Dockerfile for improved permissions and user setup
+  ([`5e83f4b`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/5e83f4bbce7edc8e1dc96ebe4b4d5d5ee22e385f))
+
+### Chores
+
+- Update Pylint Badge
+  ([`031b029`](https://github.com/Nicconike/Wakatime-Leaderboards/commit/031b029d337f82d55a66c509bd95e484d443a1d0))
+
+
 ## v1.2.2 (2025-02-02)
 
 ### Bug Fixes

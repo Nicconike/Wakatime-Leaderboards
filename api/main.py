@@ -21,7 +21,7 @@ REQUEST_TIMEOUT = (25, 30)
 README = "README.md"
 
 # Version Identifier for Changelog
-__version__ = "1.2.2"
+__version__ = "1.2.3"
 
 
 def format_time(seconds):
