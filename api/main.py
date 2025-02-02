@@ -5,6 +5,7 @@ import math
 import os
 import logging
 import time
+from typing import Dict, Optional
 import requests
 from github import GithubException
 from api.utils import initialize_github, commit_to_github
@@ -44,42 +45,108 @@ def format_time(seconds):
     )
 
 
-def get_wakatime_stats(api_key):
-    """
-    Fetch WakaTime stats for current user by polling until the server returns 200 OK or we
-    exhaust retries. Uses exponential backoff to handle 202 responses and potential 5xx errors
-    """
+def handle_successful_response(response):
+    """Handle successful HTTP response by validating and returning the data"""
+    data = response.json().get("data", {})
+    if not data.get("is_up_to_date", True):
+        logger.warning("Received 200 but stats are not finalized")
+        raise ValueError("WakaTime stats still processing")
+
+    if not data or data.get("total_seconds", 0) == 0:
+        logger.info("No coding activity detected")
+        return None
+
+    logger.debug("Successfully fetched valid stats")
+    return data
+
+
+def handle_retryable_error(response, delay, attempt):
+    """Handle retryable HTTP errors by logging and delaying the next attempt"""
+    logger.warning(
+        "Retryable error %d - Retrying in %ds (attempt %d)",
+        response.status_code,
+        delay,
+        attempt,
+    )
+    time.sleep(delay)
+
+
+def handle_client_error(response):
+    """Handle client-side HTTP errors by logging and raising a ValueError"""
+    error_msg = (
+        f"Client error {response.status_code}. " "Validate API key and permissions"
+    )
+    logger.error(error_msg)
+    raise ValueError(error_msg)
+
+
+def handle_unexpected_status(response):
+    """Handle unexpected HTTP status codes by logging and raising a ValueError"""
+    error_msg = f"Unexpected HTTP {response.status_code}"
+    logger.error(error_msg)
+    raise ValueError(error_msg)
+
+
+def handle_network_error(e, delay):
+    """Handle network-related errors by logging and delaying the next attempt"""
+    logger.warning("Network error: %s - Retrying in %ds", str(e), delay)
+    time.sleep(delay)
+
+
+def handle_exhausted_retries(max_retries):
+    """Handle the scenario where the maximum number of retries is exhausted"""
+    final_error = (
+        f"Failed after {max_retries} retries. " "WakaTime stats never became available"
+    )
+    logger.error(final_error)
+    raise ValueError(final_error)
+
+
+def get_wakatime_stats(api_key: str) -> Optional[Dict]:
+    """Fetch WakaTime stats with robust retry logic and WakaTime-specific validation"""
+    max_retries = 8
+    backoff_factor = 2
+    max_delay = 200
+
     url = "https://wakatime.com/api/v1/users/current/stats/last_7_days"
-    auth_string = "Basic " + base64.b64encode(api_key.encode()).decode()
+    auth_string = f"Basic {base64.b64encode(api_key.encode()).decode()}"
     headers = {"Authorization": auth_string}
+
     attempt = 0
-    delay = 3
+    delay = 5
 
-    while attempt < 5:
+    while attempt < max_retries:
         attempt += 1
-        response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
-        if response.status_code == 200:
-            data = response.json().get("data", {})
-            return None if not data or data.get("total_seconds", 0) == 0 else data
+        try:
+            response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
+            logger.debug(
+                "Attempt %d/%d: HTTP %d", attempt, max_retries, response.status_code
+            )
 
-        if response.status_code == 202 or (500 <= response.status_code < 600):
-            time.sleep(delay)
-            delay = math.ceil(delay * 1.5)
+            if response.status_code == 200:
+                return handle_successful_response(response)
+
+            if response.status_code in {202} or 500 <= response.status_code < 600:
+                handle_retryable_error(response, delay, attempt)
+                delay = min(math.ceil(delay * backoff_factor), max_delay)
+                continue
+
+            if 400 <= response.status_code < 500:
+                handle_client_error(response)
+
+            handle_unexpected_status(response)
+
+        except (requests.ConnectionError, requests.Timeout) as e:
+            handle_network_error(e, delay)
+            delay = min(math.ceil(delay * backoff_factor), max_delay)
             continue
 
-        if 400 <= response.status_code < 500:
-            raise ValueError(
-                f"Client error {response.status_code}. Check your API key or request"
-            )
-        raise ValueError(f"Unexpected Status Code: {response.status_code}")
-
-    raise ValueError(
-        "Failed to fetch user stats after 5 retries without receiving a 200 status"
-    )
+    handle_exhausted_retries(max_retries)
+    return None
 
 
 def get_leaderboards(api_key):
-    """Get current user's Wakatime leaderboards Stats"""
+    """Get current user's Wakatime leaderboards stats"""
     url = "https://wakatime.com/api/v1/leaders"
     auth_string = "Basic " + base64.b64encode(api_key.encode()).decode()
     headers = {"Authorization": auth_string}
@@ -151,7 +218,7 @@ def format_leaderboard_data(leaderboards):
 
 
 def update_readme(repo, markdown_data, start_marker, end_marker):
-    """Updates the README.md file with the provided Markdown content within specified markers"""
+    """Update the README.md file with the provided Markdown content within specified markers"""
     try:
         readme_file = repo.get_contents(README)
         readme_content = readme_file.decoded_content.decode("utf-8")
@@ -178,7 +245,7 @@ def update_readme(repo, markdown_data, start_marker, end_marker):
 
 
 def get_readme_content(repo):
-    """Get current README content"""
+    """Get the current content of README file"""
     readme_file = repo.get_contents(README)
     if isinstance(readme_file, list):
         readme_file = readme_file[0]
@@ -196,7 +263,7 @@ def update_wakatime_stats():
 
     # Handle no coding stats
     if not leaderboards or leaderboards["total_coding_time"] == 0:
-        logger.info("No coding activity detected in the past week.")
+        logger.info("No coding activity detected in the past week")
         return
 
     start_marker = "<!-- Wakatime-Start -->"
@@ -206,7 +273,7 @@ def update_wakatime_stats():
     if new_section_content:
         readme_content = get_readme_content(repo)
         if readme_content is None:
-            logger.error("Failed to retrieve README content.")
+            logger.error("Failed to retrieve README content")
             return
 
         start_index = readme_content.find(start_marker)
@@ -227,7 +294,7 @@ def update_wakatime_stats():
 
 
 def log_execution_time(start_time):
-    """Log the total execution time"""
+    """Log the total execution time of the script"""
     total_time = round(time.time() - start_time, 3)
     if total_time > 60:
         minutes, seconds = divmod(total_time, 60)

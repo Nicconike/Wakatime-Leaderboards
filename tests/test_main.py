@@ -19,6 +19,12 @@ from api.main import (
     log_execution_time,
     logger,
     README,
+    handle_successful_response,
+    handle_retryable_error,
+    handle_client_error,
+    handle_unexpected_status,
+    handle_network_error,
+    handle_exhausted_retries,
 )
 
 
@@ -34,7 +40,7 @@ def mock_dependencies(mocker):
 
 @patch("api.main.WAKATIME_API_KEY", None)
 def test_handle_no_wakatime_api_key():
-    """Test when WAKATIME_API_KEY is not set."""
+    """Test when WAKATIME_API_KEY is not set"""
     with pytest.raises(
         ValueError, match="WAKATIME_API_KEY environment variable not set"
     ):
@@ -131,9 +137,74 @@ def test_retries_and_errors(mock_get):
 @patch("api.main.time.sleep")
 @patch("api.main.requests.get")
 def test_get_wakatime_stats(mock_get, mock_sleep):
-    """Test get_wakatime_stats with various HTTP responses."""
+    """Test get_wakatime_stats with various HTTP responses"""
     test_successful_requests(mock_get)
     test_retries_and_errors(mock_get)
+
+
+def test_handle_successful_response():
+    """Test handle_successful_response function"""
+    response = MagicMock()
+    response.json.return_value = {
+        "data": {"total_seconds": 3600, "is_up_to_date": True}
+    }
+    assert handle_successful_response(response) == {
+        "total_seconds": 3600,
+        "is_up_to_date": True,
+    }
+
+    response.json.return_value = {"data": {"total_seconds": 0, "is_up_to_date": True}}
+    assert handle_successful_response(response) is None
+
+    response.json.return_value = {
+        "data": {"total_seconds": 3600, "is_up_to_date": False}
+    }
+    with pytest.raises(ValueError, match="WakaTime stats still processing"):
+        handle_successful_response(response)
+
+
+def test_handle_retryable_error():
+    """Test handle_retryable_error function"""
+    response = MagicMock()
+    response.status_code = 500
+    with patch("time.sleep") as mock_sleep:
+        handle_retryable_error(response, 5, 1)
+        mock_sleep.assert_called_once_with(5)
+
+
+def test_handle_client_error():
+    """Test handle_client_error function"""
+    response = MagicMock()
+    response.status_code = 404
+    with pytest.raises(
+        ValueError, match="Client error 404. Validate API key and permissions"
+    ):
+        handle_client_error(response)
+
+
+def test_handle_unexpected_status():
+    """Test handle_unexpected_status function"""
+    response = MagicMock()
+    response.status_code = 302
+    with pytest.raises(ValueError, match="Unexpected HTTP 302"):
+        handle_unexpected_status(response)
+
+
+def test_handle_network_error():
+    """Test handle_network_error function"""
+    error = requests.ConnectionError("Test ConnectionError")
+    with patch("time.sleep") as mock_sleep:
+        handle_network_error(error, 5)
+        mock_sleep.assert_called_once_with(5)
+
+
+def test_handle_exhausted_retries():
+    """Test handle_exhausted_retries function"""
+    with pytest.raises(
+        ValueError,
+        match="Failed after 8 retries. WakaTime stats never became available",
+    ):
+        handle_exhausted_retries(8)
 
 
 @patch("api.main.get_wakatime_stats")
@@ -207,7 +278,7 @@ def test_format_leaderboard_data():
         "language": {},
     }
     no_activity_result = format_leaderboard_data(no_activity_leaderboards)
-    if "No coding activity detected in the past week." not in no_activity_result:
+    if "No coding activity detected in the past week" not in no_activity_result:
         pytest.fail("Missing no coding activity message")
 
 
@@ -349,7 +420,7 @@ def test_no_coding_activity(
     """Test no coding activity scenario"""
     mock_get_leaderboards.return_value = {"total_coding_time": 0}
     update_wakatime_stats()
-    mock_logger.info.assert_called_with("No coding activity detected in the past week.")
+    mock_logger.info.assert_called_with("No coding activity detected in the past week")
     mock_commit.assert_not_called()
     mock_get_readme.assert_not_called()
     mock_update.assert_not_called()
@@ -362,7 +433,7 @@ def test_no_coding_activity(
 def test_no_changes_needed(
     mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
 ):
-    """Test scenario where no changes are needed in the README."""
+    """Test scenario where no changes are needed in the README"""
     mock_get_leaderboards.return_value = {"total_coding_time": 3600}
     mock_update.return_value = None
     update_wakatime_stats()
@@ -378,7 +449,7 @@ def test_no_changes_needed(
 def test_failed_commit(
     mock_commit, mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
 ):
-    """Test scenario where commit fails."""
+    """Test scenario where commit fails"""
     mock_get_leaderboards.return_value = {"total_coding_time": 3600}
     mock_update.return_value = "New section"
     mock_get_readme.return_value = "Old README"
