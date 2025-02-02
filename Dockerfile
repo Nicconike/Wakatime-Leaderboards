@@ -2,28 +2,33 @@
 FROM python:3.13-slim
 
 # Set environment variables
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONPATH=/wakatime-leaderboards
-ENV HOME=/wakatime-leaderboards
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/wakatime-leaderboards \
+    HOME=/wakatime-leaderboards
 
-# Create a non-root user with explicit UID/GID
+# Create non-root user with explicit UID/GID
 RUN groupadd -g 10001 appgroup && \
-    useradd -u 10000 -g appgroup -d /wakatime-leaderboards appuser && \
-    mkdir -p /wakatime-leaderboards && \
-    chown -R appuser:appgroup /wakatime-leaderboards
+    useradd -u 10000 -g appgroup \
+    --create-home --home-dir "$HOME" \
+    --shell /bin/false appuser
 
-# Set the working directory in the container
-WORKDIR /wakatime-leaderboards
+# Set working directory
+WORKDIR $HOME
 
-# Copy the requirements file into the container
-COPY --chown=appuser:appgroup requirements.txt .
+# Copy requirements.txt with root ownership and read-only permissions
+COPY --chmod=644 requirements.txt .
 
-# Install dependencies
+# Install dependencies as root
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code with proper ownership
-COPY --chown=appuser:appgroup api/ ./api/
+# Copy application code
+COPY --chmod=644 api/ ./api/
+
+# Explicit permission setup
+RUN chown -R appuser:appgroup "$HOME" && \
+    find "$HOME" -type d -exec chmod 755 {} \; && \
+    find "$HOME" -type f -exec chmod 644 {} \;
 
 # Switch to non-root user
 USER appuser
