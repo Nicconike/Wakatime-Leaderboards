@@ -66,7 +66,7 @@ jobs:
                 git reset --hard origin/${{ github.ref_name }}
 
           - name: Semantic Release
-            uses: python-semantic-release/python-semantic-release@v9.17.0
+            uses: python-semantic-release/python-semantic-release@v9.18.1
             id: semantic
             with:
                 github_token: ${{ steps.app-token.outputs.token }}
@@ -103,7 +103,7 @@ jobs:
 
           - name: Install CoSign
             if: github.event_name != 'pull_request'
-            uses: sigstore/cosign-installer@v3.7.0
+            uses: sigstore/cosign-installer@v3.8.0
             with:
                 cosign-release: 'v2.4.0'
 
