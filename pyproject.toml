@@ -12,7 +12,7 @@ authors = [
     { name = "Nicco", email = "38905025+Nicconike@users.noreply.github.com" },
 ]
 dynamic = ["version"]
-dependencies = ["PyGithub==2.5.0", "python-semantic-release==9.17.0"]
+dependencies = ["PyGithub==2.6.0", "python-semantic-release==9.19.1"]
 
 [project.optional-dependencies]
 dev = ["bandit==1.8.2", "pylint==3.3.4", "pipdeptree==2.25.0"]
