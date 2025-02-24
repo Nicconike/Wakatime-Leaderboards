@@ -66,7 +66,7 @@ jobs:
                 git reset --hard origin/${{ github.ref_name }}
 
           - name: Semantic Release
-            uses: python-semantic-release/python-semantic-release@v9.17.0
+            uses: python-semantic-release/python-semantic-release@v9.21.0
             id: semantic
             with:
                 github_token: ${{ steps.app-token.outputs.token }}
@@ -103,7 +103,7 @@ jobs:
 
           - name: Install CoSign
             if: github.event_name != 'pull_request'
-            uses: sigstore/cosign-installer@v3.7.0
+            uses: sigstore/cosign-installer@v3.8.1
             with:
                 cosign-release: 'v2.4.0'
 
@@ -172,7 +172,7 @@ jobs:
                 push-to-registry: true
 
           - name: Docker Scout Scan
-            uses: docker/scout-action@v1.16.1
+            uses: docker/scout-action@v1.16.3
             with:
                 command: quickview, cves
                 image: ${{ vars.DOCKER_USERNAME }}/wakatime-leaderboards:master
