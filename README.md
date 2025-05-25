@@ -33,13 +33,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 3 hrs 3 mins | 26 mins |
+| 3060 | 35 hrs 19 mins | 5 hrs 2 mins |
 
-#### Top Language (Docker)
+#### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 25 | 1 hr 56 mins | 16 mins |
+| 389 | 18 hrs 41 mins | 2 hrs 40 mins |
 
 
 <!-- Wakatime-End -->
