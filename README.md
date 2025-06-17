@@ -33,13 +33,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 3 hrs 11 mins | 27 mins |
+| None | 4 hrs 47 mins | 41 mins |
 
 #### Top Language (Batchfile)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 14 | 1 hr 32 mins | 13 mins |
+| None | 1 hr 32 mins | 13 mins |
 
 
 <!-- Wakatime-End -->
