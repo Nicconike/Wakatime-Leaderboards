@@ -6,7 +6,7 @@ on:
         - cron: "30 18 * * 0"
     workflow_dispatch:
     push:
-        branches: master
+        branches: [master]
         paths:
             - '.github/workflows/wakatime.yml'
             - 'api/*.py'
@@ -21,7 +21,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: GitHub App Token
-            uses: actions/create-github-app-token@v1
+            uses: actions/create-github-app-token@v2
             id: app-token
             with:
                 app-id: ${{ secrets.GH_APP_ID }}

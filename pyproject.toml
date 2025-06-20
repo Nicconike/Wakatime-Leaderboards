@@ -1,34 +1,57 @@
 [build-system]
-requires = ["setuptools ~= 75.8"]
+requires = ["setuptools>=80.0,<90.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "Wakatime-Leaderboards"
-description = "Automated WakaTime leaderboards for your GitHub profile"
+authors = [{ name = "Nicco", email = "github.giving328@passmail.com" }]
+description = "Automated WakaTime Leaderboards for your GitHub profile"
 readme = "README.md"
 requires-python = ">=3.8"
-license = { file = "LICENSE" }
-authors = [
-    { name = "Nicco", email = "38905025+Nicconike@users.noreply.github.com" },
-]
+license = "MIT"
+license-files = ["LICENSE"]
 dynamic = ["version"]
-dependencies = ["PyGithub==2.5.0", "python-semantic-release==9.17.0"]
+dependencies = ["PyGithub==2.6.1", "python-semantic-release==10.1.0"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Pytest",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Topic :: System :: Monitoring",
+    "Topic :: Games/Entertainment",
+    "Topic :: Utilities",
+]
 
 [project.optional-dependencies]
-dev = ["bandit==1.8.2", "pylint==3.3.4", "pipdeptree==2.25.0"]
-test = ["pytest-cov==6.0.0"]
+dev = ["bandit==1.8.5", "pylint==3.3.7", "pipdeptree==2.26.1", "twine==6.1.0"]
+test = ["pytest-cov==6.2.1"]
 
 [project.urls]
-Homepage = "https://github.com/nicconike/wakatime-leaderboards"
-documentation = "https://github.com/Nicconike/Wakatime-Leaderboards/blob/master/README.md"
-"Bug Tracker" = "https://github.com/nicconike/wakatime-leaderboards/issues"
+Homepage = "https://github.com/Nicconike/Wakatime-Leaderboards"
+Changelog = "https://github.com/Nicconike/Wakatime-Leaderboards/blob/master/CHANGELOG.md"
+Documentation = "https://github.com/Nicconike/Wakatime-Leaderboards/blob/master/README.md"
+Issues = "https://github.com/nicconike/wakatime-leaderboards/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["api*"]
 
 [tool.semantic_release]
 version_variables = ["api/main.py:__version__"]
+version_source = "tag"
 tag_format = "v{version}"
-commit_message = "chore: Version Release {version}"
+commit_message = "chore(release): Version Release v{version}"
 branch = "master"
-changelog_file = "CHANGELOG.md"
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = [
@@ -52,20 +75,19 @@ default_bump_level = 0
 type = "github"
 token = { env = "GH_TOKEN" }
 
-[tool.semantic_release.publish]
-upload_to_vcs_release = true
-
 [tool.semantic_release.changelog]
-changelog_file = "CHANGELOG.md"
+default_templates.changelog_file = "CHANGELOG.md"
+changelog_mode = "update"
+insertion_flag = "<!-- version list -->"
+template_dir = "templates"
+release_notes_template = "release_notes.md.j2"
+exclude_commit_patterns = ["^chore:", "^style:"]
 
 [tool.semantic_release.changelog.environment]
 trim_blocks = true
+autoescape = false
+ignore_token_for_push = false
 
-[tool.semantic_release.plugins]
-verify_conditions = ["@semantic-release/git", "@semantic-release/github"]
-analyze_commits = ["@semantic-release/commit-analyzer"]
-generate_notes = ["@semantic-release/release-notes-generator"]
-prepare = ["@semantic-release/changelog", "@semantic-release/git"]
-publish = ["@semantic-release/github"]
-success = ["@semantic-release/github"]
-fail = ["@semantic-release/github"]
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
+upload_to_pypi = true

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Required Secrets Configuration
 WAKATIME_API_KEY = os.environ["INPUT_WAKATIME_API_KEY"]
-REQUEST_TIMEOUT = (25, 30)
+REQUEST_TIMEOUT = (25, 40)
 README = "README.md"
 
 # Version Identifier for Changelog
@@ -95,18 +95,18 @@ def handle_network_error(e, delay):
 
 def handle_exhausted_retries(max_retries):
     """Handle the scenario where the maximum number of retries is exhausted"""
-    final_error = (
-        f"Failed after {max_retries} retries. " "WakaTime stats never became available"
+    warning_msg = (
+        f"Stats unavailable after {max_retries} retries. "
+        "Likely still processing. Skipping this run."
     )
-    logger.error(final_error)
-    raise ValueError(final_error)
+    logger.warning(warning_msg)
 
 
 def get_wakatime_stats(api_key: str) -> Optional[Dict]:
     """Fetch WakaTime stats with robust retry logic and WakaTime-specific validation"""
-    max_retries = 8
+    max_retries = 10
     backoff_factor = 2
-    max_delay = 200
+    max_delay = 250
 
     url = "https://wakatime.com/api/v1/users/current/stats/last_7_days"
     auth_string = f"Basic {base64.b64encode(api_key.encode()).decode()}"

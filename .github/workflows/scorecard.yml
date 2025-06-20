@@ -1,0 +1,14 @@
+name: Scorecard Security
+
+on:
+    push:
+        branches: [master]
+        paths:
+            - ".github/workflows/scoredcard.yml"
+            - "api/*.py"
+    pull_request:
+        branches: [master]
+
+jobs:
+    scorecard:
+        uses: Nicconike/Steam-Stats/.github/workflows/scorecard.yml@master
