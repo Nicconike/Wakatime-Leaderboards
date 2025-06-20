@@ -39,13 +39,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 4 hrs 47 mins | 41 mins |
+| 8937 | 14 hrs 1 min | 2 hrs |
 
-#### Top Language (Batchfile)
+#### Top Language (YAML)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 1 hr 32 mins | 13 mins |
+| 96 | 7 hrs 57 mins | 1 hr 8 mins |
 
 
 <!-- Wakatime-End -->
