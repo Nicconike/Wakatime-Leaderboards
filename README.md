@@ -39,13 +39,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 11 hrs 5 mins | 1 hr 35 mins |
+| None | 9 hrs 45 mins | 1 hr 23 mins |
 
 #### Top Language (Markdown)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 354 | 4 hrs 32 mins | 38 mins |
+| 306 | 6 hrs 43 mins | 57 mins |
 
 
 <!-- Wakatime-End -->
