@@ -39,13 +39,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 2999 | 26 hrs 53 mins | 3 hrs 50 mins |
+| 5404 | 20 hrs 50 mins | 2 hrs 58 mins |
 
 #### Top Language (PowerShell)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 1 | 17 hrs 27 mins | 2 hrs 29 mins |
+| 2 | 15 hrs 34 mins | 2 hrs 13 mins |
 
 
 <!-- Wakatime-End -->
