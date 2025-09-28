@@ -39,13 +39,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 5747 | 3 hrs 30 mins | 30 mins |
+| 5868 | 24 hrs 17 mins | 3 hrs 28 mins |
 
-#### Top Language (Markdown)
+#### Top Language (YAML)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 3490 | 2 hrs 34 mins | 22 mins |
+| 88 | 11 hrs 56 mins | 1 hr 42 mins |
 
 
 <!-- Wakatime-End -->
