@@ -1,5 +1,5 @@
 # Use the latest Python slim image with pinned digest
-FROM python:3.13.5-slim@sha256:83c04b3d51c2150e7d23f6f2911059e7f1a5a4ff8870ef6eb7d4ea4ac6b49638
+FROM python:3.13.7-slim@sha256:5f55cdf0c5d9dc1a415637a5ccc4a9e18663ad203673173b8cda8f8dcacef689
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
