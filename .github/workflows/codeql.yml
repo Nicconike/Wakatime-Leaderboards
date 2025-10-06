@@ -3,9 +3,6 @@ name: "CodeQL & Pylint"
 on:
     push:
         branches: [master]
-        paths:
-            - ".github/workflows/codeql.yml"
-            - "**/*.py"
     pull_request:
         branches: [master]
 

@@ -3,7 +3,8 @@ FROM python:3.13.5-slim@sha256:83c04b3d51c2150e7d23f6f2911059e7f1a5a4ff8870ef6eb
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/wakatime-leaderboards
 
 # Create non-root user with explicit UID
 RUN useradd -u 10000 -ms /bin/bash wakatime-leaderboards

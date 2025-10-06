@@ -4,17 +4,20 @@ on:
     push:
         branches: [master]
         tags:
-            - 'v*'
+            - "v*"
         paths:
-            - '.github/workflows/release.yml'
-            - 'api/*.py'
-            - 'pyproject.toml'
-            - 'Dockerfile'
-            - 'requirements.txt'
+            - ".github/workflows/release.yml"
+            - "api/*.py"
+            - "pyproject.toml"
+            - "Dockerfile"
+            - "requirements.txt"
 
 jobs:
     release:
         uses: Nicconike/Steam-Stats/.github/workflows/release.yml@master
+        with:
+            repo_name: "Wakatime-Leaderboards"
+            docker_image: "wakatime-leaderboards"
         secrets:
             APP_ID: ${{ secrets.GH_APP_ID }}
             APP_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}

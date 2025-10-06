@@ -1,6 +1,6 @@
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-# pipdeptree | Select-String -Pattern '^\w' | ForEach-Object { $_.Line.Split('==')[0] } > requirements.txt
 # pipdeptree | Select-String -Pattern '^\w' | ForEach-Object { $_.Line } > requirements.txt
+# pip install --upgrade -r requirements.txt
 
 version: 2
 updates:
@@ -17,13 +17,11 @@ updates:
           - python
       rebase-strategy: auto
       versioning-strategy: "increase-if-necessary"
-      open-pull-requests-limit: 10
+      open-pull-requests-limit: 3
       groups:
           python-packages:
               patterns:
                   - "*"
-      reviewers:
-          - "nicconike"
 
     - package-ecosystem: "github-actions"
       directory: "/"
@@ -37,9 +35,7 @@ updates:
           - dependabot
           - github_actions
       rebase-strategy: auto
-      open-pull-requests-limit: 10
-      reviewers:
-          - "nicconike"
+      open-pull-requests-limit: 3
       groups:
           github-actions:
               patterns:
@@ -50,16 +46,14 @@ updates:
       schedule:
           interval: "weekly"
       commit-message:
-          prefix: "chore"
+          prefix: "build"
           include: "scope"
       labels:
           - dependencies
           - dependabot
           - docker
       rebase-strategy: auto
-      open-pull-requests-limit: 10
-      reviewers:
-          - "nicconike"
+      open-pull-requests-limit: 3
       groups:
           docker:
               patterns:

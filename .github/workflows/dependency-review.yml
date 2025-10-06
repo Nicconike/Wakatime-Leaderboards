@@ -1,0 +1,8 @@
+name: Dependency Review
+on:
+    pull_request:
+        branches: [master]
+
+jobs:
+    dependency-review:
+        uses: Nicconike/Steam-Stats/.github/workflows/dependency-review.yml@master
