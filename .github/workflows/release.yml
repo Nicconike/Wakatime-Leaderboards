@@ -22,4 +22,3 @@ jobs:
             APP_ID: ${{ secrets.GH_APP_ID }}
             APP_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
             DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
