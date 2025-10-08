@@ -3,9 +3,6 @@ on:
     pull_request:
         branches: [master]
 
-permissions:
-    contents: read
-
 jobs:
     dependency-review:
         uses: Nicconike/Steam-Stats/.github/workflows/dependency-review.yml@master

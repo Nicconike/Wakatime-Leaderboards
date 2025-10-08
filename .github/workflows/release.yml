@@ -12,9 +12,6 @@ on:
             - "pyproject.toml"
             - "Dockerfile"
 
-permissions:
-    contents: read
-
 jobs:
     release:
         if: |

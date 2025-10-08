@@ -15,11 +15,61 @@ permissions:
 
 jobs:
     code-coverage:
-        uses: Nicconike/Steam-Stats/.github/workflows/coverage.yml@master
-        with:
-            use_playwright: false
-        secrets:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            INPUT_WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        if: |
+            github.actor != 'dependabot[bot]' &&
+            github.actor != 'github-actions[bot]' &&
+            github.actor != 'protected-auto-commits[bot]'
+        permissions:
+            contents: read
+            pull-requests: write
+        name: Codecov
+        runs-on: ubuntu-latest
+        concurrency: code-coverage
+        steps:
+            - name: Harden the runner
+              uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+              with:
+                  egress-policy: audit
+
+            - name: Checkout Code
+              uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Python
+              uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+              with:
+                  python-version: "3.13"
+                  cache: "pip"
+
+            - name: Install Dependencies
+              run: |
+                  pip install -r requirements.txt
+                  playwright install --with-deps chromium
+
+            - name: Run tests with coverage
+              run: |
+                  pytest --cov=api --cov-report=xml --cov-report=term-missing \
+                      --junitxml=junit.xml -o junit_family=legacy
+              env:
+                  INPUT_WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+                  GITHUB_REPOSITORY: ${{ github.repository }}
+
+            - name: Upload test results to Codecov
+              if: ${{ !cancelled() }}
+              uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1.1.1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  files: ./coverage.xml
+                  flags: unittests
+                  name: codecov-umbrella
+
+            - name: SonarQube Scan
+              uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6.0.0
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
