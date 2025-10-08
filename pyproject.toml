@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Wakatime-Leaderboards"
-version = "1.2.3"
+version = "1.2.4"
 authors = [{ name = "Nicco", email = "github.giving328@passmail.com" }]
 description = "Automated WakaTime Leaderboards for your GitHub profile"
 readme = "README.md"
