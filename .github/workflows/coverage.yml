@@ -10,6 +10,9 @@ on:
     pull_request:
         branches: [master]
 
+permissions:
+    contents: read
+
 jobs:
     code-coverage:
         uses: Nicconike/Steam-Stats/.github/workflows/coverage.yml@master
@@ -17,4 +20,6 @@ jobs:
             use_playwright: false
         secrets:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
             INPUT_WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}

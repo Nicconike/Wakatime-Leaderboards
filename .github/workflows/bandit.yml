@@ -10,6 +10,9 @@ on:
     pull_request:
         branches: [master]
 
+permissions:
+    contents: read
+
 jobs:
     bandit:
         uses: Nicconike/Steam-Stats/.github/workflows/bandit.yml@master

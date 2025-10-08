@@ -1,7 +1,7 @@
 """Test Main Runner Script"""
 
 # Disable pylint warnings for false positives
-# pylint: disable=redefined-outer-name, unused-argument
+# pylint: disable=redefined-outer-name, unused-argument, duplicate-code
 from unittest.mock import patch, MagicMock
 from unittest import TestCase
 import time
