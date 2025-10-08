@@ -16,7 +16,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Required Secrets Configuration
-WAKATIME_API_KEY = os.environ["INPUT_WAKATIME_API_KEY"]
 REQUEST_TIMEOUT = (25, 40)
 README = "README.md"
 
@@ -95,16 +94,14 @@ def handle_network_error(e, delay):
 
 def handle_exhausted_retries(max_retries):
     """Handle the scenario where the maximum number of retries is exhausted"""
-    warning_msg = (
-        f"Stats unavailable after {max_retries} retries. "
-        "Likely still processing. Skipping this run."
+    raise ValueError(
+        f"Failed after {max_retries} retries. WakaTime stats never became available"
     )
-    logger.warning(warning_msg)
 
 
 def get_wakatime_stats(api_key: str) -> Optional[Dict]:
     """Fetch WakaTime stats with robust retry logic and WakaTime-specific validation"""
-    max_retries = 10
+    max_retries = 5
     backoff_factor = 2
     max_delay = 250
 
@@ -141,8 +138,9 @@ def get_wakatime_stats(api_key: str) -> Optional[Dict]:
             delay = min(math.ceil(delay * backoff_factor), max_delay)
             continue
 
-    handle_exhausted_retries(max_retries)
-    return None
+    raise ValueError(
+        f"Failed to fetch user stats after {attempt} retries without receiving a 200 status"
+    )
 
 
 def get_leaderboards(api_key):
@@ -254,11 +252,12 @@ def get_readme_content(repo):
 
 def update_wakatime_stats():
     """Function to update Wakatime stats in README"""
-    if not WAKATIME_API_KEY:
+    wakatime_api_key = os.environ.get("INPUT_WAKATIME_API_KEY")
+    if not wakatime_api_key:
         raise ValueError("WAKATIME_API_KEY environment variable not set")
 
     repo = initialize_github()
-    leaderboards = get_leaderboards(WAKATIME_API_KEY)
+    leaderboards = get_leaderboards(wakatime_api_key)
     formatted_data = format_leaderboard_data(leaderboards)
 
     # Handle no coding stats

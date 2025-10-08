@@ -3,7 +3,8 @@
 import base64
 import logging
 import os
-from github import Github, InputGitTreeElement
+import github
+from github import InputGitTreeElement
 
 # Configure logging
 logging.basicConfig(
@@ -37,7 +38,11 @@ def get_repo(g):
 def initialize_github():
     """Initialize GitHub client and get repo"""
     token = get_github_token()
-    g = Github(token)
+    auth = getattr(github, "Auth", None)
+    if auth is not None and hasattr(auth, "Token"):
+        g = github.Github(auth=auth.Token(token))
+    else:
+        g = github.Github(token)
     return get_repo(g)
 
 

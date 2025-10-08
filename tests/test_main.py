@@ -3,10 +3,15 @@
 # Disable pylint warnings for false positives
 # pylint: disable=redefined-outer-name, unused-argument
 from unittest.mock import patch, MagicMock
+from unittest import TestCase
 import time
 import pytest
 from github import GithubException
 import requests
+from requests.exceptions import (
+    ConnectionError as RequestsConnectionError,
+    Timeout as RequestsTimeout,
+)
 from api.main import (
     format_time,
     get_wakatime_stats,
@@ -26,6 +31,13 @@ from api.main import (
     handle_network_error,
     handle_exhausted_retries,
 )
+
+
+@pytest.fixture
+def mock_get():
+    """Mock requests.get for testing"""
+    with patch("requests.get") as mock:
+        yield mock
 
 
 @pytest.fixture
@@ -120,13 +132,13 @@ def test_retries_and_errors(mock_get):
     mock_response_404 = MagicMock(status_code=404)
     mock_get.side_effect = [mock_response_404]
     with pytest.raises(
-        ValueError, match="Client error 404. Check your API key or request"
+        ValueError, match="Client error 404. Validate API key and permissions"
     ):
         get_wakatime_stats("fake_api_key")
 
     mock_response_302 = MagicMock(status_code=302)
     mock_get.side_effect = [mock_response_302]
-    with pytest.raises(ValueError, match="Unexpected Status Code: 302"):
+    with pytest.raises(ValueError, match="Unexpected HTTP 302"):
         get_wakatime_stats("fake_api_key")
 
     mock_response_202_repeated = MagicMock(status_code=202)
@@ -144,6 +156,31 @@ def test_get_wakatime_stats(mock_get, mock_sleep):
     """Test get_wakatime_stats with various HTTP responses"""
     test_successful_requests(mock_get)
     test_retries_and_errors(mock_get)
+
+
+@patch("api.main.time.sleep")
+@patch("api.main.logger")
+@patch("api.main.requests.get")
+def test_get_wakatime_stats_handles_network_errors(mock_get, mock_logger, mock_sleep):
+    """Full coverage for network error branch in get_wakatime_stats"""
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"data": {"total_seconds": 123}}
+    mock_get.side_effect = iter(
+        [
+            RequestsConnectionError("Connection aborted"),
+            RequestsTimeout("Timeout occurred"),
+            mock_response,
+        ]
+    )
+    result = get_wakatime_stats("fake_api_key")
+    tc = TestCase()
+    tc.assertEqual(result, {"total_seconds": 123})
+    tc.assertGreaterEqual(mock_logger.warning.call_count, 2)
+    for call_args in mock_logger.warning.call_args_list[:2]:
+        tc.assertIn("Network error", call_args[0][0])
+
+    tc.assertEqual(mock_sleep.call_count, 2)
 
 
 def test_handle_successful_response():
@@ -394,7 +431,7 @@ def test_get_readme_content():
 @patch("api.main.update_readme")
 @patch("api.main.get_readme_content")
 @patch("api.main.commit_to_github")
-def test_update_wakatime_stats(
+def test_update_wakatime_stats_readme_content_none(
     mock_commit,
     mock_get_readme,
     mock_update,
@@ -403,17 +440,46 @@ def test_update_wakatime_stats(
     mock_init,
     mock_logger,
 ):
-    """Test the normal flow of update_wakatime_stats"""
+    """Test update_wakatime_stats handles None from get_readme_content"""
+
     mock_repo = MagicMock()
     mock_init.return_value = mock_repo
     mock_get_leaderboards.return_value = {"total_coding_time": 3600}
     mock_format.return_value = "Formatted data"
     mock_update.return_value = "New section"
-    mock_get_readme.return_value = "Old README"
-    mock_commit.return_value = True
+    mock_get_readme.return_value = None
     update_wakatime_stats()
-    mock_commit.assert_called_once()
-    mock_logger.info.assert_called_with("Updated README with Wakatime Leaderboards")
+
+    mock_logger.error.assert_any_call("Failed to retrieve README content")
+    mock_commit.assert_not_called()
+
+
+def test_update_wakatime_stats_grouped(monkeypatch):
+    """Test update_wakatime_stats full flow"""
+    with patch("api.main.logger") as mock_logger, patch(
+        "api.main.initialize_github"
+    ) as mock_init, patch("api.main.get_leaderboards") as mock_get_leaderboards, patch(
+        "api.main.format_leaderboard_data"
+    ) as mock_format, patch(
+        "api.main.update_readme"
+    ) as mock_update, patch(
+        "api.main.get_readme_content"
+    ) as mock_get_readme, patch(
+        "api.main.commit_to_github"
+    ) as mock_commit:
+
+        mock_repo = MagicMock()
+        mock_init.return_value = mock_repo
+        mock_get_leaderboards.return_value = {"total_coding_time": 3600}
+        mock_format.return_value = "Formatted data"
+        mock_update.return_value = "New section"
+        mock_get_readme.return_value = "Old README"
+        mock_commit.return_value = True
+
+        update_wakatime_stats()
+
+        mock_commit.assert_called_once()
+        mock_logger.info.assert_called_with("Updated README with Wakatime Leaderboards")
 
 
 @patch("api.main.logger")
@@ -441,7 +507,13 @@ def test_no_changes_needed(
     mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
 ):
     """Test scenario where no changes are needed in the README"""
-    mock_get_leaderboards.return_value = {"total_coding_time": 3600}
+    mock_get_leaderboards.return_value = {
+        "total_coding_time": 3600,
+        "top_language": "Python",
+        "language_times": {"Python": 3600},
+        "global": {"rank": 1},
+        "language": {"rank": 2},
+    }
     mock_update.return_value = None
     update_wakatime_stats()
     mock_logger.info.assert_called_with("No changes needed in README")
@@ -457,7 +529,13 @@ def test_failed_commit(
     mock_commit, mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
 ):
     """Test scenario where commit fails"""
-    mock_get_leaderboards.return_value = {"total_coding_time": 3600}
+    mock_get_leaderboards.return_value = {
+        "total_coding_time": 3600,
+        "top_language": "Python",
+        "language_times": {"Python": 3600},
+        "global": {"rank": 1},
+        "language": {"rank": 2},
+    }
     mock_update.return_value = "New section"
     mock_get_readme.return_value = "Old README"
     mock_commit.return_value = False

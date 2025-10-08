@@ -25,7 +25,7 @@ def mock_repo():
 @pytest.fixture
 def mock_github():
     """Mock Github Repo"""
-    with patch("api.utils.Github") as mock_github:
+    with patch("api.utils.github.Github") as mock_github:
         yield mock_github
 
 
@@ -77,13 +77,25 @@ def test_get_repo(mock_github):
             get_repo(mock_github.return_value)
 
 
-def test_initialize_github(mock_github, mock_env_vars):
+def test_initialize_github(monkeypatch, mock_repo, mock_github):
     """Test Initializing Github Repo"""
-    mock_repo = MagicMock()
-    mock_github.return_value.get_repo.return_value = mock_repo
+    monkeypatch.setattr("api.utils.get_github_token", lambda: "fake_token")
 
-    repo = initialize_github()
-    TestCase().assertEqual(repo, mock_repo)
+    with patch("api.utils.get_repo", return_value=mock_repo) as mock_get_repo:
+        DummyToken = type(
+            "DummyToken", (object,), {"__init__": lambda self, token: None}
+        )
+        fake_auth = MagicMock()
+        fake_auth.Token = DummyToken
+        monkeypatch.setattr("api.utils.github.Auth", fake_auth)
+
+        repo_with_auth_token = initialize_github()
+        TestCase().assertEqual(repo_with_auth_token, mock_repo)
+        mock_get_repo.assert_called()
+
+        monkeypatch.setattr("api.utils.github.Auth", None)
+        repo_without_auth = initialize_github()
+        TestCase().assertEqual(repo_without_auth, mock_repo)
 
 
 @patch("api.utils.InputGitTreeElement")

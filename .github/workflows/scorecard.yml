@@ -3,9 +3,6 @@ name: Scorecard Security
 on:
     push:
         branches: [master]
-        paths:
-            - ".github/workflows/scoredcard.yml"
-            - "api/*.py"
     pull_request:
         branches: [master]
 
