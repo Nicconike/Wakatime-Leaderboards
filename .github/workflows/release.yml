@@ -218,21 +218,18 @@ jobs:
                   path: docker-scout-results.sarif
 
     provenance:
-        runs-on: ubuntu-latest
         name: SLSA3 Provenance
         needs: docker
         permissions:
             actions: read
             id-token: write
             packages: write
-        steps:
-            - name: Generate SLSA3 Provenance
-              uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
-              with:
-                  image: ${{ needs.docker.outputs.image }}
-                  digest: ${{ needs.docker.outputs.digest }}
-                  registry-username: ${{ github.actor }}
-                  registry-password: ${{ secrets.GITHUB_TOKEN }}
+        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
+        with:
+            image: ${{ needs.docker.outputs.image }}
+            digest: ${{ needs.docker.outputs.digest }}
+            registry-username: ${{ github.actor }}
+            registry-password: ${{ secrets.GITHUB_TOKEN }}
 
     cleanup:
         runs-on: ubuntu-latest
