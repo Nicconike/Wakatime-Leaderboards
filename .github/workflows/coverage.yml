@@ -5,6 +5,7 @@ on:
         branches: [master]
         paths:
             - ".github/workflows/coverage.yml"
+            - "api/*.py"
             - "tests/*.py"
             - "sonar-project.properties"
     pull_request:
