@@ -10,7 +10,7 @@
 [![CodeQL & Pylint](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/codeql.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/codeql.yml)
 [![Bandit](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/bandit.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/bandit.yml)
 [![Codecov](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/coverage.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/coverage.yml)
-[![Scorecard Security](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/scorecard.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/scorecard.yml)
+[![Scorecard Security](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/scorecards.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/scorecards.yml)
 [![Dependency Review](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/Nicconike/Wakatime-Leaderboards/actions/workflows/dependency-review.yml)
 
 #### Code Quality & Coverage
