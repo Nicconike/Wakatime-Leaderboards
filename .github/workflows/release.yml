@@ -117,6 +117,9 @@ jobs:
             attestations: write
             id-token: write
             packages: write
+        outputs:
+            image: ${{ steps.push.outputs.image }}
+            digest: ${{ steps.push.outputs.digest }}
         steps:
             - name: Harden the runner
               uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
@@ -191,20 +194,12 @@ jobs:
                   DIGEST: ${{ steps.push.outputs.digest }}
               run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
-            # - name: Generate Artifact Attestation
-            #   uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
-            #   with:
-            #       subject-name: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
-            #       subject-digest: ${{ steps.push.outputs.digest }}
-            #       push-to-registry: true
-
-            - name: Generate SLSA3 Provenance
-              uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
+            - name: Generate Artifact Attestation
+              uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
               with:
-                  image: ${{ needs.push.outputs.image }}
-                  digest: ${{ needs.push.outputs.digest }}
-                  registry-username: ${{ github.actor }}
-                  registry-password: ${{ secrets.GITHUB_TOKEN }}
+                  subject-name: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+                  subject-digest: ${{ steps.push.outputs.digest }}
+                  push-to-registry: true
 
             - name: Docker Scout Scan
               uses: docker/scout-action@f8c776824083494ab0d56b8105ba2ca85c86e4de # v1.18.2
@@ -221,6 +216,23 @@ jobs:
               with:
                   name: docker-scout-results
                   path: docker-scout-results.sarif
+
+    provenance:
+        runs-on: ubuntu-latest
+        name: SLSA3 Provenance
+        needs: docker
+        permissions:
+            actions: read
+            id-token: write
+            packages: write
+        steps:
+            - name: Generate SLSA3 Provenance
+              uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
+              with:
+                  image: ${{ needs.docker.outputs.image }}
+                  digest: ${{ needs.docker.outputs.digest }}
+                  registry-username: ${{ github.actor }}
+                  registry-password: ${{ secrets.GITHUB_TOKEN }}
 
     cleanup:
         runs-on: ubuntu-latest
