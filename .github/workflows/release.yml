@@ -224,6 +224,8 @@ jobs:
             image: ${{ needs.docker.outputs.image }}
             digest: ${{ needs.docker.outputs.digest }}
             registry-username: ${{ github.actor }}
+        secrets:
+            registry-password: ${{ secrets.GITHUB_TOKEN }}
 
     cleanup:
         runs-on: ubuntu-latest
