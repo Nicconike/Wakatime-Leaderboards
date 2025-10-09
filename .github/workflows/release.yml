@@ -29,6 +29,9 @@ jobs:
         permissions:
             id-token: write
             contents: write
+        environment:
+            name: pypi
+            url: https://pypi.org/project/Wakatime-Leaderboards/
         outputs:
             released: ${{ steps.semantic.outputs.released }}
             version: ${{ steps.semantic.outputs.version }}

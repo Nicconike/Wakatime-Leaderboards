@@ -487,6 +487,7 @@ def test_update_wakatime_stats_grouped(monkeypatch):
 @patch("api.main.update_readme")
 @patch("api.main.get_readme_content")
 @patch("api.main.commit_to_github")
+@patch.dict("os.environ", {"INPUT_WAKATIME_API_KEY": "fake_api_key"})
 def test_no_coding_activity(
     mock_commit, mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
 ):
@@ -503,6 +504,7 @@ def test_no_coding_activity(
 @patch("api.main.get_leaderboards")
 @patch("api.main.update_readme")
 @patch("api.main.get_readme_content")
+@patch.dict("os.environ", {"INPUT_WAKATIME_API_KEY": "fake_api_key"})
 def test_no_changes_needed(
     mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
 ):
@@ -525,6 +527,7 @@ def test_no_changes_needed(
 @patch("api.main.update_readme")
 @patch("api.main.get_readme_content")
 @patch("api.main.commit_to_github")
+@patch.dict("os.environ", {"INPUT_WAKATIME_API_KEY": "fake_api_key"})
 def test_failed_commit(
     mock_commit, mock_get_readme, mock_update, mock_get_leaderboards, mock_logger
 ):
