@@ -103,7 +103,7 @@ jobs:
         name: Docker
         runs-on: ubuntu-latest
         needs: release
-        # if: needs.release.outputs.released == 'true'
+        if: needs.release.outputs.released == 'true'
         concurrency:
             group: ${{ github.workflow }}-${{ github.ref }}
             cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
@@ -112,9 +112,6 @@ jobs:
             attestations: write
             id-token: write
             packages: write
-        outputs:
-            image: ${{ steps.image.outputs.image }}
-            digest: ${{ steps.push.outputs.digest }}
         steps:
             - name: Harden the runner
               uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
@@ -182,12 +179,6 @@ jobs:
                   secrets: |
                       GITHUB_TOKEN=${{ steps.app-token.outputs.token }}
 
-            - name: Output image
-              id: image
-              run: |
-                  image_name="ghcr.io/${{ github.repository }}"
-                  echo "image=$image_name" >> "$GITHUB_OUTPUT"
-
             - name: Sign the published Docker Image
               if: ${{ github.event_name != 'pull_request' }}
               env:
@@ -217,21 +208,6 @@ jobs:
               with:
                   name: docker-scout-results
                   path: docker-scout-results.sarif
-
-    provenance:
-        name: SLSA3 Provenance
-        needs: docker
-        permissions:
-            actions: read
-            id-token: write
-            packages: write
-        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
-        with:
-            image: ${{ needs.docker.outputs.image }}
-            digest: ${{ needs.docker.outputs.digest }}
-            registry-username: ${{ github.actor }}
-        secrets:
-            registry-password: ${{ secrets.GITHUB_TOKEN }}
 
     cleanup:
         runs-on: ubuntu-latest
