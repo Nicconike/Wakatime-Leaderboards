@@ -113,6 +113,7 @@ jobs:
             id-token: write
             packages: write
         outputs:
+            image: ${{ steps.image.outputs.image }}
             digest: ${{ steps.push.outputs.digest }}
         steps:
             - name: Harden the runner
@@ -181,6 +182,12 @@ jobs:
                   secrets: |
                       GITHUB_TOKEN=${{ steps.app-token.outputs.token }}
 
+            - name: Output image
+              id: image
+              run: |
+                  image_name="ghcr.io/${{ github.repository }}"
+                  echo "image=$image_name" >> "$GITHUB_OUTPUT"
+
             - name: Sign the published Docker Image
               if: ${{ github.event_name != 'pull_request' }}
               env:
@@ -220,7 +227,7 @@ jobs:
             packages: write
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
         with:
-            image: ghcr.io/${{ github.repository }}
+            image: ${{ needs.docker.outputs.image }}
             digest: ${{ needs.docker.outputs.digest }}
             registry-username: ${{ github.actor }}
         secrets:
