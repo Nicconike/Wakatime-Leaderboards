@@ -43,8 +43,8 @@ jobs:
 
             - name: Run pre-commit
               run: |
-                  pip install pre-commit
-                  pre-commit run --all-files --show-diff-on-failure
+                  pip install pre-commit==4.3.0
+                  pre-commit run --all-files
 
     code-coverage:
         name: Codecov

@@ -15,6 +15,7 @@
 
 #### Code Quality & Coverage
 ![Pylint](https://img.shields.io/badge/Pylint-9.97-greenyellow?logo=python)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Nicconike/Wakatime-Leaderboards/master.svg)](https://results.pre-commit.ci/latest/github/Nicconike/Wakatime-Leaderboards/master)
 [![codecov](https://codecov.io/gh/Nicconike/Wakatime-Leaderboards/graph/badge.svg?token=CX701AOW5Y)](https://codecov.io/gh/Nicconike/Wakatime-Leaderboards)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Wakatime-Leaderboards&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Wakatime-Leaderboards)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Wakatime-Leaderboards&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Wakatime-Leaderboards)

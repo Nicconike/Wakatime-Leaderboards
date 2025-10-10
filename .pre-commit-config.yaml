@@ -20,6 +20,13 @@ repos:
       hooks:
           - id: pylint
             files: \.py$
+            additional_dependencies:
+                - requests
+                - PyGithub
+                - pytest
+            args:
+                - "--max-args=7"
+                - "--disable=too-many-positional-arguments"
     - repo: https://github.com/python-jsonschema/check-jsonschema
       rev: 0.34.0
       hooks:
