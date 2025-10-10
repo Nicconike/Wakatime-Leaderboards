@@ -113,7 +113,6 @@ jobs:
             id-token: write
             packages: write
         outputs:
-            image: ${{ steps.push.outputs.image }}
             digest: ${{ steps.push.outputs.digest }}
         steps:
             - name: Harden the runner
@@ -221,7 +220,7 @@ jobs:
             packages: write
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
         with:
-            image: ${{ needs.docker.outputs.image }}
+            image: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
             digest: ${{ needs.docker.outputs.digest }}
             registry-username: ${{ github.actor }}
         secrets:

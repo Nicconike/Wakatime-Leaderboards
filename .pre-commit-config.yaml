@@ -19,8 +19,18 @@ repos:
       rev: v3.3.9
       hooks:
           - id: pylint
+            files: \.py$
     - repo: https://github.com/python-jsonschema/check-jsonschema
-      rev: v0.34.0
+      rev: 0.34.0
       hooks:
           - id: check-github-workflows
           - id: check-dependabot
+
+ci:
+    autofix_commit_msg: "chore(ci): [pre-commit.ci] autofix"
+    autofix_prs: true
+    autoupdate_branch: master
+    autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+    autoupdate_schedule: monthly
+    autoupdate_timezone: Asia/Kolkata
+    submodules: false
