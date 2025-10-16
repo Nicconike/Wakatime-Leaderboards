@@ -53,19 +53,18 @@
 ## Sample Output
 
 <!-- Wakatime-Start -->
-### Wakatime Leaderboards (Worldwide)
-
+#### Detailed Breakdown
 #### Public Leaderboards (Weekly)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 2212 | 25 hrs 12 mins | 3 hrs 36 mins |
+| None | - | - |
 
-#### Top Language (YAML)
+#### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 34 | 8 hrs 45 mins | 1 hr 15 mins |
+| None | - | - |
 
 
 <!-- Wakatime-End -->
