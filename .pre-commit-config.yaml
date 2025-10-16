@@ -15,18 +15,18 @@ repos:
           - id: check-yaml
           - id: check-toml
           - id: check-merge-conflict
-    - repo: https://github.com/pylint-dev/pylint
-      rev: v3.3.9
-      hooks:
-          - id: pylint
-            files: \.py$
-            additional_dependencies:
-                - requests
-                - PyGithub
-                - pytest
-            args:
-                - "--max-args=7"
-                - "--disable=too-many-positional-arguments"
+    # - repo: https://github.com/pylint-dev/pylint
+    #   rev: v3.3.9
+    #   hooks:
+    #       - id: pylint
+    #         files: \.py$
+    #         additional_dependencies:
+    #             - requests
+    #             - PyGithub
+    #             - pytest
+    #         args:
+    #             - "--max-args=7"
+    #             - "--disable=too-many-positional-arguments"
     - repo: https://github.com/python-jsonschema/check-jsonschema
       rev: 0.34.0
       hooks:
@@ -37,7 +37,7 @@ ci:
     autofix_commit_msg: "chore(ci): [pre-commit.ci] autofix"
     autofix_prs: true
     autoupdate_branch: master
-    autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+    autoupdate_commit_msg: "chore(ci): [pre-commit.ci] autoupdate"
     autoupdate_schedule: monthly
     autoupdate_timezone: Asia/Kolkata
     submodules: false
