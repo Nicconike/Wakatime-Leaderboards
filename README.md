@@ -53,23 +53,19 @@
 ## Sample Output
 
 <!-- Wakatime-Start -->
-### 📊 WakaTime Weekly Stats
+### Wakatime Leaderboards (Worldwide)
 
-![WakaTime Stats](assets/wakatime-stats.svg)
-![Ranks](assets/wakatime-leaderboard.svg)
-
-#### Wakatime Leaderboards (Weekly)
-#### Public Leaderboards (Worldwide)
+#### Public Leaderboards (Weekly)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 6819 | - | - |
+| 6819 | 16 hrs 49 mins | 2 hrs 24 mins |
 
 #### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 765 | - | - |
+| 765 | 9 hrs 47 mins | 1 hr 23 mins |
 
 
 <!-- Wakatime-End -->
