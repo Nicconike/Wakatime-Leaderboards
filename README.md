@@ -59,13 +59,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 7629 | 14 hrs 47 mins | 2 hrs 6 mins |
+| None | 3 hrs 51 mins | 33 mins |
 
 #### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 487 | 13 hrs 31 mins | 1 hr 55 mins |
+| 2855 | 3 hrs 12 mins | 27 mins |
 
 
 <!-- Wakatime-End -->
