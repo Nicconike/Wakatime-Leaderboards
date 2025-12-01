@@ -3,7 +3,7 @@ default_language_version:
 
 repos:
     - repo: https://github.com/gitleaks/gitleaks
-      rev: v8.28.0
+      rev: v8.30.0
       hooks:
           - id: gitleaks
     - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -16,7 +16,7 @@ repos:
           - id: check-toml
           - id: check-merge-conflict
     - repo: https://github.com/pylint-dev/pylint
-      rev: v3.3.9
+      rev: v4.0.4
       hooks:
           - id: pylint
             files: \.py$
@@ -28,7 +28,7 @@ repos:
                 - "--max-args=7"
                 - "--disable=too-many-positional-arguments"
     - repo: https://github.com/python-jsonschema/check-jsonschema
-      rev: 0.34.0
+      rev: 0.35.0
       hooks:
           - id: check-github-workflows
           - id: check-dependabot
