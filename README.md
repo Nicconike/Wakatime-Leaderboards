@@ -59,13 +59,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 6 hrs 4 mins | 52 mins |
+| None | 9 hrs 45 mins | 1 hr 23 mins |
 
-#### Top Language (Other)
+#### Top Language (YAML)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| - | 2 hrs 53 mins | 24 mins |
+| 215 | 5 hrs 26 mins | 46 mins |
 
 
 <!-- Wakatime-End -->
