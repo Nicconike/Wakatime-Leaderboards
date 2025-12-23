@@ -29,7 +29,7 @@ repos:
                 - "--max-args=7"
                 - "--disable=too-many-positional-arguments"
     - repo: https://github.com/python-jsonschema/check-jsonschema
-      rev: 0.35.0
+      rev: 0.36.0
       hooks:
           - id: check-github-workflows
           - id: check-dependabot
