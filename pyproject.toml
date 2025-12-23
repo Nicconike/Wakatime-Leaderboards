@@ -23,7 +23,7 @@ keywords = [
 ]
 license = "MIT"
 license-files = ["LICENSE"]
-dependencies = ["PyGithub==2.8.1", "python-semantic-release==10.4.1"]
+dependencies = ["PyGithub==2.8.1", "python-semantic-release==10.5.3"]
 classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
