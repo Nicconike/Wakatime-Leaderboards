@@ -59,13 +59,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| None | 35 mins | 5 mins |
+| None | 47 mins | 6 mins |
 
-#### Top Language (YAML)
+#### Top Language (JavaScript)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 2758 | 30 mins | 4 mins |
+| 4478 | 22 mins | 3 mins |
 
 
 <!-- Wakatime-End -->
