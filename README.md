@@ -59,13 +59,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 3784 | 21 hrs | 3 hrs |
+| 9543 | 8 hrs 54 mins | 1 hr 16 mins |
 
-#### Top Language (TypeScript)
+#### Top Language (Python)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 3114 | 7 hrs 7 mins | 1 hr 1 min |
+| 832 | 8 hrs 22 mins | 1 hr 11 mins |
 
 
 <!-- Wakatime-End -->
