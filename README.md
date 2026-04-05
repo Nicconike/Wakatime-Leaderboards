@@ -59,13 +59,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 1214 | 36 hrs 40 mins | 5 hrs 14 mins |
+| 1975 | 19 hrs 15 mins | 2 hrs 45 mins |
 
-#### Top Language (TypeScript)
+#### Top Language (YAML)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 2224 | 12 hrs 21 mins | 1 hr 45 mins |
+| 11 | 12 hrs 14 mins | 1 hr 44 mins |
 
 
 <!-- Wakatime-End -->
