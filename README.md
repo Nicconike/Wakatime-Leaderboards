@@ -59,13 +59,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 4597 | 15 hrs 24 mins | 2 hrs 12 mins |
+| 8519 | 12 hrs 57 mins | 1 hr 51 mins |
 
-#### Top Language (TypeScript)
+#### Top Language (C#)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 2358 | 8 hrs 35 mins | 1 hr 13 mins |
+| None | 6 hrs 43 mins | 57 mins |
 
 
 <!-- Wakatime-End -->
