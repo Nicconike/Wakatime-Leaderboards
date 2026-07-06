@@ -17,7 +17,7 @@ repos:
           - id: check-toml
           - id: check-merge-conflict
     - repo: https://github.com/pylint-dev/pylint
-      rev: v4.0.4
+      rev: v4.0.6
       hooks:
           - id: pylint
             files: \.py$
@@ -29,7 +29,7 @@ repos:
                 - "--max-args=7"
                 - "--disable=too-many-positional-arguments"
     - repo: https://github.com/python-jsonschema/check-jsonschema
-      rev: 0.36.0
+      rev: 0.37.4
       hooks:
           - id: check-github-workflows
           - id: check-dependabot
