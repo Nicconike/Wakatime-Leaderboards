@@ -59,13 +59,13 @@
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| 5741 | 21 hrs 17 mins | 3 hrs 2 mins |
+| 1345 | 37 hrs 5 mins | 5 hrs 17 mins |
 
-#### Top Language (Other)
+#### Top Language (C#)
 
 | Ranked | Hours Coded | Daily Avg |
 | ------ | ----------- | --------- |
-| - | 6 hrs 10 mins | 52 mins |
+| None | 6 hrs 59 mins | 59 mins |
 
 
 <!-- Wakatime-End -->
